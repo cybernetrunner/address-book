@@ -1,9 +1,18 @@
 package main
 
 import (
-	"fmt"
+	app "address-book/internal/address-book"
+	log "github.com/sirupsen/logrus"
+)
+
+const (
+	StrStop  = "[SERVER  STOP]"
+	StrStart = "[SERVER START]"
 )
 
 func main() {
-	fmt.Println("Wake up, Neo...")
+	defer log.Fatal(StrStop)
+
+	log.Println(StrStart)
+	app.Run()
 }
