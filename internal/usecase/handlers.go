@@ -1,7 +1,7 @@
 package usecase
 
 import (
-	"address-book/internal/usecase/repository"
+	r "address-book/internal/usecase/repository"
 
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -12,11 +12,9 @@ const (
 	StatusOKResponse = "OK"
 )
 
-var repo = repository.NewRepository()
-
 type Handler struct{}
 
-func (h Handler) CreateField(c *gin.Context) {
+func (h Handler) CreateField(c *gin.Context, repo *r.Repository) {
 	repo.AddField(
 		c.PostForm("name"),
 		c.PostForm("address"),
@@ -25,14 +23,14 @@ func (h Handler) CreateField(c *gin.Context) {
 	c.JSON(http.StatusOK, StatusOKResponse)
 }
 
-func (h Handler) ReadField(c *gin.Context) {
+func (h Handler) ReadField(c *gin.Context, repo *r.Repository) {
 	if i, ok := repo.FindField(c.PostForm("param")); ok {
 		c.JSON(http.StatusOK, repo.GetItem(i))
 	}
 	c.JSON(http.StatusNotFound, NotFoundResponse)
 }
 
-func (h Handler) UpdateField(c *gin.Context) {
+func (h Handler) UpdateField(c *gin.Context, repo *r.Repository) {
 	if i, ok := repo.FindField(c.PostForm("param")); ok {
 		repo.DeleteField(i)
 		repo.AddField(
@@ -46,7 +44,7 @@ func (h Handler) UpdateField(c *gin.Context) {
 	c.JSON(http.StatusNotFound, NotFoundResponse)
 }
 
-func (h Handler) DeleteField(c *gin.Context) {
+func (h Handler) DeleteField(c *gin.Context, repo *r.Repository) {
 	if i, ok := repo.FindField(c.PostForm("param")); ok {
 		repo.DeleteField(i)
 		c.JSON(http.StatusOK, StatusOKResponse)

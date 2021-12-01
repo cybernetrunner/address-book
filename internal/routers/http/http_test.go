@@ -2,6 +2,7 @@ package http_test
 
 import (
 	r "address-book/internal/routers/http"
+	"address-book/internal/usecase/repository"
 
 	"github.com/stretchr/testify/assert"
 
@@ -10,10 +11,9 @@ import (
 	"testing"
 )
 
-const ConfigPath = "/config/config.yml"
-
 var (
-	router = r.SetupRouter()
+	repo   = repository.NewRepository()
+	router = r.SetupRouter(repo)
 	w      = httptest.NewRecorder()
 )
 

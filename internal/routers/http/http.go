@@ -2,6 +2,7 @@ package http
 
 import (
 	u "address-book/internal/usecase"
+	r "address-book/internal/usecase/repository"
 
 	"github.com/gin-gonic/gin"
 
@@ -12,7 +13,7 @@ const (
 	APIPath = "/address-field"
 )
 
-func SetupRouter() *gin.Engine {
+func SetupRouter(repo *r.Repository) *gin.Engine {
 	h := new(u.Handler)
 	r := gin.Default()
 
@@ -28,28 +29,28 @@ func SetupRouter() *gin.Engine {
 	r.POST(
 		APIPath,
 		func(c *gin.Context) {
-			h.CreateField(c)
+			h.CreateField(c, repo)
 		},
 	)
 
 	r.GET(
 		APIPath,
 		func(c *gin.Context) {
-			h.ReadField(c)
+			h.ReadField(c, repo)
 		},
 	)
 
 	r.PUT(
 		APIPath,
 		func(c *gin.Context) {
-			h.UpdateField(c)
+			h.UpdateField(c, repo)
 		},
 	)
 
 	r.DELETE(
 		APIPath,
 		func(c *gin.Context) {
-			h.DeleteField(c)
+			h.DeleteField(c, repo)
 		},
 	)
 	return r

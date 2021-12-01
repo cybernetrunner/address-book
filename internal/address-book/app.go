@@ -2,6 +2,7 @@ package address_book
 
 import (
 	controller "address-book/internal/routers/http"
+	"address-book/internal/usecase/repository"
 	"fmt"
 
 	log "github.com/sirupsen/logrus"
@@ -13,7 +14,8 @@ const (
 )
 
 var (
-	router  = controller.SetupRouter()
+	repo    = repository.NewRepository()
+	router  = controller.SetupRouter(repo)
 	address = fmt.Sprintf("%s:%s", UriHost, UriPort)
 )
 
