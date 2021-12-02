@@ -1,18 +1,16 @@
 package main
 
 import (
-	app "address-book/internal/address-book"
 	log "github.com/sirupsen/logrus"
 )
 
 const (
-	StrStop  = "[SERVER  STOP]"
-	StrStart = "[SERVER START]"
+	StrStart = "Service started"
+	StrStop  = "Service stopped"
 )
 
 func main() {
-	defer log.Fatal(StrStop)
+	log.Info(StrStart)
 
-	log.Println(StrStart)
-	app.Run()
+	log.Info(StrStop)
 }
