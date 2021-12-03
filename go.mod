@@ -1,10 +1,11 @@
-module address-book
+module github.com/cyneruxyz/address-book
 
-go 1.17
-
-require github.com/sirupsen/logrus v1.8.1
+go 1.16
 
 require (
-	github.com/stretchr/testify v1.7.0 // indirect
-	golang.org/x/sys v0.0.0-20200116001909-b77594299b42 // indirect
+	github.com/grpc-ecosystem/grpc-gateway/v2 v2.7.1
+	github.com/sirupsen/logrus v1.8.1
+	google.golang.org/grpc v1.42.0
+	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.1.0
+	google.golang.org/protobuf v1.27.1
 )

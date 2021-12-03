@@ -1,0 +1,54 @@
+syntax = "proto3";
+package api.v1;
+option go_package = "./proto";
+
+import "proto/google/api/annotation.proto";
+
+
+service APIService {
+  rpc CreateAddressField(AddressFieldQuery) returns (AddressField) {
+    option (google.api.http) = {
+      post: "/addressbook"
+      body: "*"
+    };
+  }
+
+  rpc ReadAddressField(AddressFieldQuery) returns (stream AddressField) {
+    option (google.api.http) = {
+      get:  "/addressbook"
+      body: "*"
+    };
+  }
+
+  rpc UpdateAddressField(AddressFieldQuery) returns (Response) {
+    option (google.api.http) = {
+      put:  "/addressbook"
+      body: "*"
+    };
+  }
+  rpc DeleteAddressField(AddressFieldQuery) returns (Response) {
+    option (google.api.http) = {
+      delete: "/addressbook"
+      body:   "*"
+    };
+  }
+}
+
+message AddressField {
+  string name = 1;
+  string address = 2;
+  string phone = 3; // Unique ID number for this person
+}
+
+message AddressFieldQuery {
+  string param = 1;
+}
+
+message AddressFieldRequest {
+  AddressField field = 1;
+}
+
+message Response {
+  int32  code = 1;
+  string message = 2;
+}
