@@ -2,34 +2,30 @@ syntax = "proto3";
 package api.v1;
 option go_package = "./proto";
 
-import "proto/google/api/annotation.proto";
+import "google/api/annotations.proto";
 
 
 service APIService {
   rpc CreateAddressField(AddressFieldQuery) returns (AddressField) {
     option (google.api.http) = {
       post: "/addressbook"
-      body: "*"
     };
   }
 
   rpc ReadAddressField(AddressFieldQuery) returns (stream AddressField) {
     option (google.api.http) = {
       get:  "/addressbook"
-      body: "*"
     };
   }
 
   rpc UpdateAddressField(AddressFieldQuery) returns (Response) {
     option (google.api.http) = {
       put:  "/addressbook"
-      body: "*"
     };
   }
   rpc DeleteAddressField(AddressFieldQuery) returns (Response) {
     option (google.api.http) = {
       delete: "/addressbook"
-      body:   "*"
     };
   }
 }

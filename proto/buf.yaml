@@ -1,4 +1,0 @@
-version: v1
-name: buf.build/cyneruxyz/address-book
-deps:
-  - buf.build/googleapis/googleapis
