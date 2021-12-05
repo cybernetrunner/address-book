@@ -1,5 +1,5 @@
 syntax = "proto3";
-package api.v1;
+package cyneruxyz.api.v1;
 option go_package = "./proto";
 
 import "google/api/annotations.proto";

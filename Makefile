@@ -1,15 +1,5 @@
 create:
-	mkdir -p google/api
-	curl https://raw.githubusercontent.com/googleapis/googleapis/master/google/api/annotations.proto > google/api/annotations.proto
-	curl https://raw.githubusercontent.com/googleapis/googleapis/master/google/api/http.proto > google/api/http.proto
-
-	#buf generate
-
-	protoc -I . \
-    	--go_out ./gen --go_opt paths=source_relative \
-    	--go-grpc_out ./gen --go-grpc_opt paths=source_relative \
-		--grpc-gateway_out ./gen --grpc-gateway_opt paths=source_relative \
-    	./proto/api.proto
+	buf generate
 
 clear:
 	rm gen/proto/*.go
