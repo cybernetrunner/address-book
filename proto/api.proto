@@ -6,9 +6,10 @@ import "google/api/annotations.proto";
 
 
 service APIService {
-  rpc CreateAddressField(AddressFieldQuery) returns (AddressField) {
+  rpc CreateAddressField(AddressFieldRequest) returns (AddressField) {
     option (google.api.http) = {
       post: "/addressbook"
+      body: "*"
     };
   }
 
@@ -18,12 +19,13 @@ service APIService {
     };
   }
 
-  rpc UpdateAddressField(AddressFieldQuery) returns (Response) {
+  rpc UpdateAddressField(AddressFieldUpdateRequest) returns (Response) {
     option (google.api.http) = {
       put:  "/addressbook"
+      body: "*"
     };
   }
-  rpc DeleteAddressField(AddressFieldQuery) returns (Response) {
+  rpc DeleteAddressField(AddressFieldRequest) returns (Response) {
     option (google.api.http) = {
       delete: "/addressbook"
     };
@@ -44,7 +46,11 @@ message AddressFieldRequest {
   AddressField field = 1;
 }
 
+message AddressFieldUpdateRequest {
+  AddressField originalField = 1;
+  AddressField replacementField = 2;
+}
+
 message Response {
-  int32  code = 1;
-  string message = 2;
+  string message = 1;
 }
