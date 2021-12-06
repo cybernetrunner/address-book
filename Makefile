@@ -2,8 +2,8 @@ create:
 	buf generate
 
 clear:
-	rm -r gen
-	rm -r bin
+	rm gen/proto/*.go
+	rm bin/*
 
 depend:
 	go mod tidy -go=1.16
@@ -16,10 +16,9 @@ test:
 build:
 	go fmt ./...
 	golangci-lint run ./...
-	mkdir -p bin
-	go build -o bin/server cmd/server/main.go
+	go build -o bin/address-book cmd/address-book/main.go
 
 run:
 	go fmt ./...
 	golangci-lint run ./...
-	go run cmd/server/main.go
+	go run cmd/address-book/main.go
