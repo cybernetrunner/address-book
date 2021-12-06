@@ -18,6 +18,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type APIServiceClient interface {
+	Echo(ctx context.Context, in *EchoRequest, opts ...grpc.CallOption) (*Response, error)
 	CreateAddressField(ctx context.Context, in *AddressFieldRequest, opts ...grpc.CallOption) (*AddressField, error)
 	ReadAddressField(ctx context.Context, in *AddressFieldQuery, opts ...grpc.CallOption) (APIService_ReadAddressFieldClient, error)
 	UpdateAddressField(ctx context.Context, in *AddressFieldUpdateRequest, opts ...grpc.CallOption) (*Response, error)
@@ -30,6 +31,15 @@ type aPIServiceClient struct {
 
 func NewAPIServiceClient(cc grpc.ClientConnInterface) APIServiceClient {
 	return &aPIServiceClient{cc}
+}
+
+func (c *aPIServiceClient) Echo(ctx context.Context, in *EchoRequest, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/cyneruxyz.api.v1.APIService/Echo", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *aPIServiceClient) CreateAddressField(ctx context.Context, in *AddressFieldRequest, opts ...grpc.CallOption) (*AddressField, error) {
@@ -95,6 +105,7 @@ func (c *aPIServiceClient) DeleteAddressField(ctx context.Context, in *AddressFi
 // All implementations must embed UnimplementedAPIServiceServer
 // for forward compatibility
 type APIServiceServer interface {
+	Echo(context.Context, *EchoRequest) (*Response, error)
 	CreateAddressField(context.Context, *AddressFieldRequest) (*AddressField, error)
 	ReadAddressField(*AddressFieldQuery, APIService_ReadAddressFieldServer) error
 	UpdateAddressField(context.Context, *AddressFieldUpdateRequest) (*Response, error)
@@ -106,6 +117,9 @@ type APIServiceServer interface {
 type UnimplementedAPIServiceServer struct {
 }
 
+func (UnimplementedAPIServiceServer) Echo(context.Context, *EchoRequest) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Echo not implemented")
+}
 func (UnimplementedAPIServiceServer) CreateAddressField(context.Context, *AddressFieldRequest) (*AddressField, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateAddressField not implemented")
 }
@@ -129,6 +143,24 @@ type UnsafeAPIServiceServer interface {
 
 func RegisterAPIServiceServer(s grpc.ServiceRegistrar, srv APIServiceServer) {
 	s.RegisterService(&APIService_ServiceDesc, srv)
+}
+
+func _APIService_Echo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EchoRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(APIServiceServer).Echo(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/cyneruxyz.api.v1.APIService/Echo",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(APIServiceServer).Echo(ctx, req.(*EchoRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _APIService_CreateAddressField_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -213,6 +245,10 @@ var APIService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "cyneruxyz.api.v1.APIService",
 	HandlerType: (*APIServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Echo",
+			Handler:    _APIService_Echo_Handler,
+		},
 		{
 			MethodName: "CreateAddressField",
 			Handler:    _APIService_CreateAddressField_Handler,

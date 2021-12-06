@@ -28,6 +28,10 @@ type server struct {
 	apipb.APIServiceServer
 }
 
+func (s *server) Echo(ctx context.Context, req *apipb.EchoRequest) (*apipb.Response, error) {
+	return &apipb.Response{Message: req.Message}, nil
+}
+
 func (s *server) CreateAddressField(ctx context.Context, req *apipb.AddressFieldRequest) (*apipb.AddressField, error) {
 	if ok := repo.CreateAddressField(req.Field); !ok {
 		//goland:noinspection GoErrorStringFormat

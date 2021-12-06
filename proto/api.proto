@@ -6,6 +6,11 @@ import "google/api/annotations.proto";
 
 
 service APIService {
+  rpc Echo(EchoRequest) returns(Response) {
+    option (google.api.http) = {
+      post:  "/echo"
+    };
+  }
   rpc CreateAddressField(AddressFieldRequest) returns (AddressField) {
     option (google.api.http) = {
       post: "/addressbook"
@@ -49,6 +54,10 @@ message AddressFieldRequest {
 message AddressFieldUpdateRequest {
   AddressField originalField = 1;
   AddressField replacementField = 2;
+}
+
+message EchoRequest {
+  string message = 1;
 }
 
 message Response {
