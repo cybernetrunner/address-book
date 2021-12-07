@@ -1,7 +1,9 @@
 package repository
 
 import (
+	"fmt"
 	"github.com/cyneruxyz/address-book/gen/proto"
+	"regexp"
 	"sync"
 )
 
@@ -61,9 +63,16 @@ func (ab *AddressBook) getAddressByPhone(phone string) (field *proto.AddressFiel
 
 func (ab *AddressBook) getAddressArray(param string) (field []*proto.AddressField) {
 	for k, v := range ab.Book {
-		if param == v.Name || param == v.Address {
+		if wildcard(v.Name, param) || wildcard(v.Address, param) {
 			field = append(field, ab.Book[k])
 		}
 	}
 	return field
+}
+
+func wildcard(check, compare string) bool {
+	ptn := fmt.Sprintf(".*%s.*", compare)
+	match, _ := regexp.MatchString(ptn, check)
+
+	return match
 }
