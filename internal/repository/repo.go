@@ -1,117 +1,69 @@
 package repository
 
 import (
-	model "github.com/cyneruxyz/address-book/gen/proto"
-	"hash/fnv"
-	"strings"
+	"github.com/cyneruxyz/address-book/gen/proto"
 	"sync"
 )
 
+type phone = string
+
 type AddressBook struct {
-	sync.Mutex
-	Names  map[string][]*model.AddressField
-	Addrs  map[string][]*model.AddressField
-	Phones map[string][]*model.AddressField
-	Hashes map[uint32]*model.AddressField
+	sync.RWMutex
+	Book map[phone]*proto.AddressField
 }
 
 func NewAddressBook() *AddressBook {
 	return &AddressBook{}
 }
 
-func (ab *AddressBook) CreateAddressField(af *model.AddressField) (ok bool) {
-	hash := getHash(af)
-	if _, ok := ab.Hashes[hash]; ok {
-		return !ok
-	}
-
+func (ab *AddressBook) CreateAddressField(af *proto.AddressField) {
 	ab.Lock()
 	defer ab.Unlock()
 
-	ab.Names[af.Name] = append(ab.Names[af.Name], af)
-	ab.Addrs[af.Address] = append(ab.Addrs[af.Address], af)
-	ab.Phones[af.Phone] = append(ab.Phones[af.Phone], af)
-	ab.Hashes[hash] = af
-
-	return true
+	ab.Book[af.Phone] = af
 }
 
-func (ab *AddressBook) GetAddressFields(param string) (fields []*model.AddressField, ok bool) {
+func (ab *AddressBook) GetAddressFields(param string) (fields []*proto.AddressField) {
+	ab.RLock()
+	defer ab.RUnlock()
+
+	if field, ok := ab.getAddressByPhone(param); ok {
+		return []*proto.AddressField{field}
+	}
+	return ab.getAddressArray(param)
+}
+
+func (ab *AddressBook) UpdateAddressField(original, replace *proto.AddressField) (ok bool) {
 	ab.Lock()
 	defer ab.Unlock()
 
-	if res, ok := ab.Names[param]; ok {
-		return res, ok
-	} else if res, ok := ab.Addrs[param]; ok {
-		return res, ok
-	} else if res, ok := ab.Phones[param]; ok {
-		return res, ok
+	if field, ok := ab.getAddressByPhone(original.Phone); ok {
+		ab.Book[field.Phone] = replace
+		return ok
+	}
+	return false
+}
+
+func (ab *AddressBook) DeleteAddressField(af *proto.AddressField) {
+	ab.Lock()
+	defer ab.Unlock()
+
+	delete(ab.Book, af.Phone)
+}
+
+func (ab *AddressBook) getAddressByPhone(phone string) (field *proto.AddressField, ok bool) {
+	if s, ok := ab.Book[phone]; ok {
+		return s, ok
 	}
 
 	return nil, false
 }
 
-func (ab *AddressBook) UpdateAddressField(original, replace *model.AddressField) (ok bool) {
-	hash := getHash(original)
-	if _, ok := ab.Hashes[hash]; !ok {
-		return !ok
-	}
-	delete(ab.Hashes, hash)
-
-	ab.Lock()
-	defer ab.Unlock()
-
-	ab.Hashes[getHash(replace)] = replace
-	replaceField(ab.Names[original.Name], original, replace)
-	replaceField(ab.Addrs[original.Address], original, replace)
-	replaceField(ab.Phones[original.Phone], original, replace)
-
-	return true
-
-}
-
-func (ab *AddressBook) DeleteAddressField(af *model.AddressField) (ok bool) {
-	hash := getHash(af)
-	if _, ok := ab.Hashes[hash]; !ok {
-		return !ok
-	}
-
-	ab.Lock()
-	defer ab.Unlock()
-
-	delete(ab.Hashes, hash)
-	deleteField(ab.Names[af.Name], af)
-	deleteField(ab.Addrs[af.Address], af)
-	deleteField(ab.Phones[af.Phone], af)
-
-	return true
-}
-
-func replaceField(arr []*model.AddressField, o, r *model.AddressField) {
-	for i, v := range arr {
-		if v == o {
-			arr[i] = r
+func (ab *AddressBook) getAddressArray(param string) (field []*proto.AddressField) {
+	for k, v := range ab.Book {
+		if param == v.Name || param == v.Address {
+			field = append(field, ab.Book[k])
 		}
 	}
-}
-
-func deleteField(arr []*model.AddressField, f *model.AddressField) {
-	for i, v := range arr {
-		if v == f {
-			arr = append(arr[:i], arr[i+1:]...)
-		}
-	}
-}
-
-func getHash(af *model.AddressField) uint32 {
-	var sb strings.Builder
-
-	sb.WriteString(af.Name)
-	sb.WriteString(af.Address)
-	sb.WriteString(af.Phone)
-
-	h := fnv.New32a()
-	_, _ = h.Write([]byte(sb.String()))
-
-	return h.Sum32()
+	return field
 }

@@ -9,11 +9,12 @@ service APIService {
   rpc Echo(EchoRequest) returns(Response) {
     option (google.api.http) = {
       post:  "/echo"
+      body: "*"
     };
   }
   rpc CreateAddressField(AddressFieldRequest) returns (AddressField) {
     option (google.api.http) = {
-      post: "/addressbook"
+      post: "/addressbook/"
       body: "*"
     };
   }
@@ -26,13 +27,14 @@ service APIService {
 
   rpc UpdateAddressField(AddressFieldUpdateRequest) returns (Response) {
     option (google.api.http) = {
-      put:  "/addressbook"
+      put:  "/addressbook/update",
       body: "*"
     };
   }
   rpc DeleteAddressField(AddressFieldRequest) returns (Response) {
     option (google.api.http) = {
-      delete: "/addressbook"
+      put: "/addressbook/delete"
+      body: "*"
     };
   }
 }
