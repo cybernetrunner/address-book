@@ -77,7 +77,10 @@ func (ab *AddressBook) getItemByPhone(p *proto.Phone) (field *proto.AddressField
 
 func (ab *AddressBook) getItemArray(param string) (field []*proto.AddressField, ok bool) {
 	for k, v := range ab.Book {
-		if wildcard(v.Name, param) || wildcard(v.Address, param) {
+		if match, err := wildcard(v.Name, param); (err != nil) || match {
+			field = append(field, ab.Book[k])
+		}
+		if match, err := wildcard(v.Address, param); (err != nil) || match {
 			field = append(field, ab.Book[k])
 		}
 	}
@@ -89,8 +92,8 @@ func (ab *AddressBook) getItemArray(param string) (field []*proto.AddressField, 
 	return field, true
 }
 
-func wildcard(check, compare string) bool {
-	match, _ := regexp.MatchString(fmt.Sprintf("%s.*", compare), check)
+func wildcard(check, compare string) (bool, error) {
+	match, err := regexp.MatchString(fmt.Sprintf("%s.*", compare), check)
 
-	return match
+	return match, err
 }

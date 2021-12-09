@@ -48,7 +48,7 @@ func TestReadItem(t *testing.T) {
 	defer ctrl.Finish()
 
 	repo := mockapp.NewMockStorage(ctrl)
-	
+
 	repo.EXPECT().
 		ReadItem(gomock.Eq(param)).Times(1).
 		Return(
