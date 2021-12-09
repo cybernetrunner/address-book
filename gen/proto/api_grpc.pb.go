@@ -19,10 +19,10 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type APIServiceClient interface {
 	Echo(ctx context.Context, in *EchoRequest, opts ...grpc.CallOption) (*Response, error)
-	CreateAddressField(ctx context.Context, in *AddressFieldRequest, opts ...grpc.CallOption) (*AddressField, error)
+	CreateAddressField(ctx context.Context, in *AddressFieldRequest, opts ...grpc.CallOption) (*Response, error)
 	ReadAddressField(ctx context.Context, in *AddressFieldQuery, opts ...grpc.CallOption) (APIService_ReadAddressFieldClient, error)
 	UpdateAddressField(ctx context.Context, in *AddressFieldUpdateRequest, opts ...grpc.CallOption) (*Response, error)
-	DeleteAddressField(ctx context.Context, in *AddressFieldRequest, opts ...grpc.CallOption) (*Response, error)
+	DeleteAddressField(ctx context.Context, in *Phone, opts ...grpc.CallOption) (*Response, error)
 }
 
 type aPIServiceClient struct {
@@ -42,8 +42,8 @@ func (c *aPIServiceClient) Echo(ctx context.Context, in *EchoRequest, opts ...gr
 	return out, nil
 }
 
-func (c *aPIServiceClient) CreateAddressField(ctx context.Context, in *AddressFieldRequest, opts ...grpc.CallOption) (*AddressField, error) {
-	out := new(AddressField)
+func (c *aPIServiceClient) CreateAddressField(ctx context.Context, in *AddressFieldRequest, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
 	err := c.cc.Invoke(ctx, "/cyneruxyz.api.v1.APIService/CreateAddressField", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -92,7 +92,7 @@ func (c *aPIServiceClient) UpdateAddressField(ctx context.Context, in *AddressFi
 	return out, nil
 }
 
-func (c *aPIServiceClient) DeleteAddressField(ctx context.Context, in *AddressFieldRequest, opts ...grpc.CallOption) (*Response, error) {
+func (c *aPIServiceClient) DeleteAddressField(ctx context.Context, in *Phone, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
 	err := c.cc.Invoke(ctx, "/cyneruxyz.api.v1.APIService/DeleteAddressField", in, out, opts...)
 	if err != nil {
@@ -106,10 +106,10 @@ func (c *aPIServiceClient) DeleteAddressField(ctx context.Context, in *AddressFi
 // for forward compatibility
 type APIServiceServer interface {
 	Echo(context.Context, *EchoRequest) (*Response, error)
-	CreateAddressField(context.Context, *AddressFieldRequest) (*AddressField, error)
+	CreateAddressField(context.Context, *AddressFieldRequest) (*Response, error)
 	ReadAddressField(*AddressFieldQuery, APIService_ReadAddressFieldServer) error
 	UpdateAddressField(context.Context, *AddressFieldUpdateRequest) (*Response, error)
-	DeleteAddressField(context.Context, *AddressFieldRequest) (*Response, error)
+	DeleteAddressField(context.Context, *Phone) (*Response, error)
 	mustEmbedUnimplementedAPIServiceServer()
 }
 
@@ -120,7 +120,7 @@ type UnimplementedAPIServiceServer struct {
 func (UnimplementedAPIServiceServer) Echo(context.Context, *EchoRequest) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Echo not implemented")
 }
-func (UnimplementedAPIServiceServer) CreateAddressField(context.Context, *AddressFieldRequest) (*AddressField, error) {
+func (UnimplementedAPIServiceServer) CreateAddressField(context.Context, *AddressFieldRequest) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateAddressField not implemented")
 }
 func (UnimplementedAPIServiceServer) ReadAddressField(*AddressFieldQuery, APIService_ReadAddressFieldServer) error {
@@ -129,7 +129,7 @@ func (UnimplementedAPIServiceServer) ReadAddressField(*AddressFieldQuery, APISer
 func (UnimplementedAPIServiceServer) UpdateAddressField(context.Context, *AddressFieldUpdateRequest) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateAddressField not implemented")
 }
-func (UnimplementedAPIServiceServer) DeleteAddressField(context.Context, *AddressFieldRequest) (*Response, error) {
+func (UnimplementedAPIServiceServer) DeleteAddressField(context.Context, *Phone) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteAddressField not implemented")
 }
 func (UnimplementedAPIServiceServer) mustEmbedUnimplementedAPIServiceServer() {}
@@ -221,7 +221,7 @@ func _APIService_UpdateAddressField_Handler(srv interface{}, ctx context.Context
 }
 
 func _APIService_DeleteAddressField_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AddressFieldRequest)
+	in := new(Phone)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -233,7 +233,7 @@ func _APIService_DeleteAddressField_Handler(srv interface{}, ctx context.Context
 		FullMethod: "/cyneruxyz.api.v1.APIService/DeleteAddressField",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(APIServiceServer).DeleteAddressField(ctx, req.(*AddressFieldRequest))
+		return srv.(APIServiceServer).DeleteAddressField(ctx, req.(*Phone))
 	}
 	return interceptor(ctx, in, info, handler)
 }

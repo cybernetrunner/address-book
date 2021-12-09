@@ -2,21 +2,19 @@ package addressbook
 
 import (
 	"context"
-	"errors"
 	"github.com/cyneruxyz/address-book/gen/proto"
 	"github.com/cyneruxyz/address-book/internal/repository"
+	"github.com/cyneruxyz/address-book/internal/repository/storage"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 	"net"
 	"net/http"
 )
 
-const (
-	errStorageNotResponses = "Storage not response"
-	grpcServerEndpoint     = "localhost:9090"
+var (
+	repo               repository.Repository = storage.NewAddressBook()
+	grpcServerEndpoint                       = "localhost:9090"
 )
-
-var repo = repository.NewAddressBook()
 
 type server struct {
 	proto.APIServiceServer
@@ -27,26 +25,29 @@ func (s *server) Echo(ctx context.Context, req *proto.EchoRequest) (*proto.Respo
 }
 
 func (s *server) CreateAddressField(ctx context.Context, req *proto.AddressFieldRequest) (*proto.AddressField, error) {
-	repo.CreateAddressField(req.Field)
+	if err := repo.CreateAddressField(req.Field); err != nil {
+		return nil, err
+	}
 
 	return req.Field, nil
 }
 
 func (s *server) ReadAddressField(ctx context.Context, query *proto.AddressFieldQuery) ([]*proto.AddressField, error) {
-	return repo.GetAddressFields(query.Param), nil
+	return repo.GetAddressFields(query.Param)
 }
 
 func (s *server) UpdateAddressField(ctx context.Context, req *proto.AddressFieldUpdateRequest) (*proto.Response, error) {
-	if ok := repo.UpdateAddressField(req.OriginalField, req.ReplacementField); !ok {
-		//goland:noinspection GoErrorStringFormat
-		return nil, errors.New(errStorageNotResponses)
+	if err := repo.UpdateAddressField(req.Phone, req.ReplacementField); err != nil {
+		return nil, err
 	}
 
 	return &proto.Response{Message: "Address field updated successfully"}, nil
 }
 
-func (s *server) DeleteAddressField(ctx context.Context, req *proto.AddressFieldRequest, opts ...grpc.CallOption) (*proto.Response, error) {
-	repo.DeleteAddressField(req.Field)
+func (s *server) DeleteAddressField(ctx context.Context, req *proto.Phone, opts ...grpc.CallOption) (*proto.Response, error) {
+	if err := repo.DeleteAddressField(req); err != nil {
+		return nil, err
+	}
 
 	return &proto.Response{Message: "Address field deleted successfully"}, nil
 }

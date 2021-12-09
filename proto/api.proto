@@ -12,9 +12,9 @@ service APIService {
       body: "*"
     };
   }
-  rpc CreateAddressField(AddressFieldRequest) returns (AddressField) {
+  rpc CreateAddressField(AddressFieldRequest) returns (Response) {
     option (google.api.http) = {
-      post: "/addressbook/"
+      post: "/addressbook"
       body: "*"
     };
   }
@@ -27,14 +27,14 @@ service APIService {
 
   rpc UpdateAddressField(AddressFieldUpdateRequest) returns (Response) {
     option (google.api.http) = {
-      put:  "/addressbook/update",
+      put:  "/addressbook",
       body: "*"
     };
   }
-  rpc DeleteAddressField(AddressFieldRequest) returns (Response) {
+  
+  rpc DeleteAddressField(Phone) returns (Response) {
     option (google.api.http) = {
-      put: "/addressbook/delete"
-      body: "*"
+      delete: "/addressbook"
     };
   }
 }
@@ -42,7 +42,11 @@ service APIService {
 message AddressField {
   string name = 1;
   string address = 2;
-  string phone = 3; // Unique ID number for this person
+  Phone phone = 3; // Unique ID number for this person
+}
+
+message Phone {
+  string phone = 1;
 }
 
 message AddressFieldQuery {
@@ -54,7 +58,7 @@ message AddressFieldRequest {
 }
 
 message AddressFieldUpdateRequest {
-  AddressField originalField = 1;
+  Phone phone = 1;
   AddressField replacementField = 2;
 }
 

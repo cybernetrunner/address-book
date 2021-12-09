@@ -10,6 +10,7 @@ depend:
 	go mod vendor
 
 test:
+	mockgen -source=internal/repository/repo.go --destination=mock/repository.go
 	go test
 	go test -race
 

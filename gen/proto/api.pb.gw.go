@@ -166,7 +166,7 @@ var (
 )
 
 func request_APIService_DeleteAddressField_0(ctx context.Context, marshaler runtime.Marshaler, client APIServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq AddressFieldRequest
+	var protoReq Phone
 	var metadata runtime.ServerMetadata
 
 	if err := req.ParseForm(); err != nil {
@@ -182,7 +182,7 @@ func request_APIService_DeleteAddressField_0(ctx context.Context, marshaler runt
 }
 
 func local_request_APIService_DeleteAddressField_0(ctx context.Context, marshaler runtime.Marshaler, server APIServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq AddressFieldRequest
+	var protoReq Phone
 	var metadata runtime.ServerMetadata
 
 	if err := req.ParseForm(); err != nil {
