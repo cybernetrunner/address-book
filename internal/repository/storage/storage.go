@@ -75,8 +75,6 @@ func (ab *AddressBook) getAddressByPhone(p *proto.Phone) (field *proto.AddressFi
 }
 
 func (ab *AddressBook) getAddressArray(param string) (field []*proto.AddressField, ok bool) {
-	// TODO: check wildcards
-
 	for k, v := range ab.Book {
 		if wildcard(v.Name, param) || wildcard(v.Address, param) {
 			field = append(field, ab.Book[k])
