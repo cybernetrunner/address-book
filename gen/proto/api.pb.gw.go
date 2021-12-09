@@ -31,7 +31,7 @@ var _ = runtime.String
 var _ = utilities.NewDoubleArray
 var _ = metadata.Join
 
-func request_APIService_Echo_0(ctx context.Context, marshaler runtime.Marshaler, client APIServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_AddressBookService_Echo_0(ctx context.Context, marshaler runtime.Marshaler, client AddressBookServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq EchoRequest
 	var metadata runtime.ServerMetadata
 
@@ -48,7 +48,7 @@ func request_APIService_Echo_0(ctx context.Context, marshaler runtime.Marshaler,
 
 }
 
-func local_request_APIService_Echo_0(ctx context.Context, marshaler runtime.Marshaler, server APIServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_AddressBookService_Echo_0(ctx context.Context, marshaler runtime.Marshaler, server AddressBookServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq EchoRequest
 	var metadata runtime.ServerMetadata
 
@@ -65,7 +65,7 @@ func local_request_APIService_Echo_0(ctx context.Context, marshaler runtime.Mars
 
 }
 
-func request_APIService_CreateAddressField_0(ctx context.Context, marshaler runtime.Marshaler, client APIServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_AddressBookService_Create_0(ctx context.Context, marshaler runtime.Marshaler, client AddressBookServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq AddressFieldRequest
 	var metadata runtime.ServerMetadata
 
@@ -77,12 +77,12 @@ func request_APIService_CreateAddressField_0(ctx context.Context, marshaler runt
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := client.CreateAddressField(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.Create(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_APIService_CreateAddressField_0(ctx context.Context, marshaler runtime.Marshaler, server APIServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_AddressBookService_Create_0(ctx context.Context, marshaler runtime.Marshaler, server AddressBookServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq AddressFieldRequest
 	var metadata runtime.ServerMetadata
 
@@ -94,27 +94,27 @@ func local_request_APIService_CreateAddressField_0(ctx context.Context, marshale
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := server.CreateAddressField(ctx, &protoReq)
+	msg, err := server.Create(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
 var (
-	filter_APIService_ReadAddressField_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
+	filter_AddressBookService_Read_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
 )
 
-func request_APIService_ReadAddressField_0(ctx context.Context, marshaler runtime.Marshaler, client APIServiceClient, req *http.Request, pathParams map[string]string) (APIService_ReadAddressFieldClient, runtime.ServerMetadata, error) {
+func request_AddressBookService_Read_0(ctx context.Context, marshaler runtime.Marshaler, client AddressBookServiceClient, req *http.Request, pathParams map[string]string) (AddressBookService_ReadClient, runtime.ServerMetadata, error) {
 	var protoReq AddressFieldQuery
 	var metadata runtime.ServerMetadata
 
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_APIService_ReadAddressField_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_AddressBookService_Read_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	stream, err := client.ReadAddressField(ctx, &protoReq)
+	stream, err := client.Read(ctx, &protoReq)
 	if err != nil {
 		return nil, metadata, err
 	}
@@ -127,7 +127,7 @@ func request_APIService_ReadAddressField_0(ctx context.Context, marshaler runtim
 
 }
 
-func request_APIService_UpdateAddressField_0(ctx context.Context, marshaler runtime.Marshaler, client APIServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_AddressBookService_Update_0(ctx context.Context, marshaler runtime.Marshaler, client AddressBookServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq AddressFieldUpdateRequest
 	var metadata runtime.ServerMetadata
 
@@ -139,12 +139,12 @@ func request_APIService_UpdateAddressField_0(ctx context.Context, marshaler runt
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := client.UpdateAddressField(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.Update(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_APIService_UpdateAddressField_0(ctx context.Context, marshaler runtime.Marshaler, server APIServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_AddressBookService_Update_0(ctx context.Context, marshaler runtime.Marshaler, server AddressBookServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq AddressFieldUpdateRequest
 	var metadata runtime.ServerMetadata
 
@@ -156,65 +156,65 @@ func local_request_APIService_UpdateAddressField_0(ctx context.Context, marshale
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := server.UpdateAddressField(ctx, &protoReq)
+	msg, err := server.Update(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
 var (
-	filter_APIService_DeleteAddressField_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
+	filter_AddressBookService_Delete_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
 )
 
-func request_APIService_DeleteAddressField_0(ctx context.Context, marshaler runtime.Marshaler, client APIServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_AddressBookService_Delete_0(ctx context.Context, marshaler runtime.Marshaler, client AddressBookServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq Phone
 	var metadata runtime.ServerMetadata
 
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_APIService_DeleteAddressField_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_AddressBookService_Delete_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := client.DeleteAddressField(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.Delete(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_APIService_DeleteAddressField_0(ctx context.Context, marshaler runtime.Marshaler, server APIServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_AddressBookService_Delete_0(ctx context.Context, marshaler runtime.Marshaler, server AddressBookServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq Phone
 	var metadata runtime.ServerMetadata
 
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_APIService_DeleteAddressField_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_AddressBookService_Delete_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := server.DeleteAddressField(ctx, &protoReq)
+	msg, err := server.Delete(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
-// RegisterAPIServiceHandlerServer registers the http handlers for service APIService to "mux".
-// UnaryRPC     :call APIServiceServer directly.
+// RegisterAddressBookServiceHandlerServer registers the http handlers for service AddressBookService to "mux".
+// UnaryRPC     :call AddressBookServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
-// Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterAPIServiceHandlerFromEndpoint instead.
-func RegisterAPIServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server APIServiceServer) error {
+// Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterAddressBookServiceHandlerFromEndpoint instead.
+func RegisterAddressBookServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server AddressBookServiceServer) error {
 
-	mux.Handle("POST", pattern_APIService_Echo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_AddressBookService_Echo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/cyneruxyz.api.v1.APIService/Echo", runtime.WithHTTPPathPattern("/echo"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/cyneruxyz.api.v1.AddressBookService/Echo", runtime.WithHTTPPathPattern("/echo"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_APIService_Echo_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_AddressBookService_Echo_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -222,22 +222,22 @@ func RegisterAPIServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux,
 			return
 		}
 
-		forward_APIService_Echo_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_AddressBookService_Echo_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_APIService_CreateAddressField_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_AddressBookService_Create_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/cyneruxyz.api.v1.APIService/CreateAddressField", runtime.WithHTTPPathPattern("/addressbook"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/cyneruxyz.api.v1.AddressBookService/Create", runtime.WithHTTPPathPattern("/app"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_APIService_CreateAddressField_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_AddressBookService_Create_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -245,29 +245,29 @@ func RegisterAPIServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux,
 			return
 		}
 
-		forward_APIService_CreateAddressField_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_AddressBookService_Create_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_APIService_ReadAddressField_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_AddressBookService_Read_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		err := status.Error(codes.Unimplemented, "streaming calls are not yet supported in the in-process transport")
 		_, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 		return
 	})
 
-	mux.Handle("PUT", pattern_APIService_UpdateAddressField_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("PUT", pattern_AddressBookService_Update_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/cyneruxyz.api.v1.APIService/UpdateAddressField", runtime.WithHTTPPathPattern("/addressbook"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/cyneruxyz.api.v1.AddressBookService/Update", runtime.WithHTTPPathPattern("/app"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_APIService_UpdateAddressField_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_AddressBookService_Update_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -275,22 +275,22 @@ func RegisterAPIServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux,
 			return
 		}
 
-		forward_APIService_UpdateAddressField_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_AddressBookService_Update_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("DELETE", pattern_APIService_DeleteAddressField_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("DELETE", pattern_AddressBookService_Delete_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/cyneruxyz.api.v1.APIService/DeleteAddressField", runtime.WithHTTPPathPattern("/addressbook"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/cyneruxyz.api.v1.AddressBookService/Delete", runtime.WithHTTPPathPattern("/app"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_APIService_DeleteAddressField_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_AddressBookService_Delete_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -298,16 +298,16 @@ func RegisterAPIServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux,
 			return
 		}
 
-		forward_APIService_DeleteAddressField_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_AddressBookService_Delete_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
 	return nil
 }
 
-// RegisterAPIServiceHandlerFromEndpoint is same as RegisterAPIServiceHandler but
+// RegisterAddressBookServiceHandlerFromEndpoint is same as RegisterAddressBookServiceHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
-func RegisterAPIServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
+func RegisterAddressBookServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
 	conn, err := grpc.Dial(endpoint, opts...)
 	if err != nil {
 		return err
@@ -327,119 +327,119 @@ func RegisterAPIServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.Ser
 		}()
 	}()
 
-	return RegisterAPIServiceHandler(ctx, mux, conn)
+	return RegisterAddressBookServiceHandler(ctx, mux, conn)
 }
 
-// RegisterAPIServiceHandler registers the http handlers for service APIService to "mux".
+// RegisterAddressBookServiceHandler registers the http handlers for service AddressBookService to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
-func RegisterAPIServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
-	return RegisterAPIServiceHandlerClient(ctx, mux, NewAPIServiceClient(conn))
+func RegisterAddressBookServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+	return RegisterAddressBookServiceHandlerClient(ctx, mux, NewAddressBookServiceClient(conn))
 }
 
-// RegisterAPIServiceHandlerClient registers the http handlers for service APIService
-// to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "APIServiceClient".
-// Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "APIServiceClient"
+// RegisterAddressBookServiceHandlerClient registers the http handlers for service AddressBookService
+// to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "AddressBookServiceClient".
+// Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "AddressBookServiceClient"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
-// "APIServiceClient" to call the correct interceptors.
-func RegisterAPIServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client APIServiceClient) error {
+// "AddressBookServiceClient" to call the correct interceptors.
+func RegisterAddressBookServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client AddressBookServiceClient) error {
 
-	mux.Handle("POST", pattern_APIService_Echo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_AddressBookService_Echo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/cyneruxyz.api.v1.APIService/Echo", runtime.WithHTTPPathPattern("/echo"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/cyneruxyz.api.v1.AddressBookService/Echo", runtime.WithHTTPPathPattern("/echo"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_APIService_Echo_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_AddressBookService_Echo_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_APIService_Echo_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_AddressBookService_Echo_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_APIService_CreateAddressField_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_AddressBookService_Create_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/cyneruxyz.api.v1.APIService/CreateAddressField", runtime.WithHTTPPathPattern("/addressbook"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/cyneruxyz.api.v1.AddressBookService/Create", runtime.WithHTTPPathPattern("/app"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_APIService_CreateAddressField_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_AddressBookService_Create_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_APIService_CreateAddressField_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_AddressBookService_Create_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_APIService_ReadAddressField_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_AddressBookService_Read_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/cyneruxyz.api.v1.APIService/ReadAddressField", runtime.WithHTTPPathPattern("/addressbook"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/cyneruxyz.api.v1.AddressBookService/Read", runtime.WithHTTPPathPattern("/app"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_APIService_ReadAddressField_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_AddressBookService_Read_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_APIService_ReadAddressField_0(ctx, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
+		forward_AddressBookService_Read_0(ctx, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("PUT", pattern_APIService_UpdateAddressField_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("PUT", pattern_AddressBookService_Update_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/cyneruxyz.api.v1.APIService/UpdateAddressField", runtime.WithHTTPPathPattern("/addressbook"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/cyneruxyz.api.v1.AddressBookService/Update", runtime.WithHTTPPathPattern("/app"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_APIService_UpdateAddressField_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_AddressBookService_Update_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_APIService_UpdateAddressField_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_AddressBookService_Update_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("DELETE", pattern_APIService_DeleteAddressField_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("DELETE", pattern_AddressBookService_Delete_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/cyneruxyz.api.v1.APIService/DeleteAddressField", runtime.WithHTTPPathPattern("/addressbook"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/cyneruxyz.api.v1.AddressBookService/Delete", runtime.WithHTTPPathPattern("/app"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_APIService_DeleteAddressField_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_AddressBookService_Delete_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_APIService_DeleteAddressField_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_AddressBookService_Delete_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -447,25 +447,25 @@ func RegisterAPIServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux,
 }
 
 var (
-	pattern_APIService_Echo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"echo"}, ""))
+	pattern_AddressBookService_Echo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"echo"}, ""))
 
-	pattern_APIService_CreateAddressField_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"addressbook"}, ""))
+	pattern_AddressBookService_Create_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"app"}, ""))
 
-	pattern_APIService_ReadAddressField_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"addressbook"}, ""))
+	pattern_AddressBookService_Read_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"app"}, ""))
 
-	pattern_APIService_UpdateAddressField_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"addressbook"}, ""))
+	pattern_AddressBookService_Update_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"app"}, ""))
 
-	pattern_APIService_DeleteAddressField_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"addressbook"}, ""))
+	pattern_AddressBookService_Delete_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"app"}, ""))
 )
 
 var (
-	forward_APIService_Echo_0 = runtime.ForwardResponseMessage
+	forward_AddressBookService_Echo_0 = runtime.ForwardResponseMessage
 
-	forward_APIService_CreateAddressField_0 = runtime.ForwardResponseMessage
+	forward_AddressBookService_Create_0 = runtime.ForwardResponseMessage
 
-	forward_APIService_ReadAddressField_0 = runtime.ForwardResponseStream
+	forward_AddressBookService_Read_0 = runtime.ForwardResponseStream
 
-	forward_APIService_UpdateAddressField_0 = runtime.ForwardResponseMessage
+	forward_AddressBookService_Update_0 = runtime.ForwardResponseMessage
 
-	forward_APIService_DeleteAddressField_0 = runtime.ForwardResponseMessage
+	forward_AddressBookService_Delete_0 = runtime.ForwardResponseMessage
 )

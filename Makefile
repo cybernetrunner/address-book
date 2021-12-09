@@ -1,6 +1,6 @@
 create:
 	buf generate
-	mockgen -source=internal/repository/repo.go --destination=mock/repository.go
+	mockgen -source=internal/app/intarfaces.go --destination=internal/mock/repo.go Storage
 
 clear:
 	rm -r gen

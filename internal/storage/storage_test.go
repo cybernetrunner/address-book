@@ -1,16 +1,17 @@
-package repository_test
+package storage_test
 
 import (
 	"github.com/brianvoe/gofakeit/v6"
 	"github.com/cyneruxyz/address-book/gen/proto"
-	"github.com/cyneruxyz/address-book/internal/repository"
-	"github.com/cyneruxyz/address-book/internal/repository/storage"
-	"github.com/cyneruxyz/address-book/test/mock_repository"
+	"github.com/cyneruxyz/address-book/internal/app"
+	mockapp "github.com/cyneruxyz/address-book/internal/mock"
+	"github.com/cyneruxyz/address-book/internal/storage"
 	"github.com/golang/mock/gomock"
+
 	"testing"
 )
 
-var r repository.Repository = storage.NewAddressBook()
+var r app.Storage = storage.New()
 
 func randomField() proto.AddressField {
 	return proto.AddressField{
@@ -22,49 +23,51 @@ func randomField() proto.AddressField {
 	}
 }
 
-func TestCreteAddressField(t *testing.T) {
+func TestCreteItem(t *testing.T) {
 	address := randomField()
 
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	repo := mock_repository.NewMockRepository(ctrl)
+	repo := mockapp.NewMockStorage(ctrl)
+
 	repo.EXPECT().
-		CreateAddressField(gomock.Eq(&address)).
+		CreateItem(gomock.Eq(&address)).
 		Return(gomock.Nil()).Times(1)
 
-	if err := r.CreateAddressField(&address); err != nil {
+	if err := r.CreateItem(&address); err != nil {
 		t.Fail()
 	}
 }
 
-func TestGetAddressField(t *testing.T) {
+func TestReadItem(t *testing.T) {
 	address := randomField()
 	param := address.Name
 
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	repo := mock_repository.NewMockRepository(ctrl)
+	repo := mockapp.NewMockStorage(ctrl)
+	
 	repo.EXPECT().
-		GetAddressFields(gomock.Eq(param)).Times(1).
+		ReadItem(gomock.Eq(param)).Times(1).
 		Return(
 			gomock.Eq(append([]*proto.AddressField{}, &address)),
 			gomock.Nil(),
 		)
 
-	if err := r.CreateAddressField(&address); err != nil {
+	if err := r.CreateItem(&address); err != nil {
 		t.Fail()
 	}
 
-	if arr, err := r.GetAddressFields(param); err != nil {
+	if arr, err := r.ReadItem(param); err != nil {
 		t.Fail()
 	} else if arr[0] != &address {
 		t.Fail()
 	}
 }
 
-func TestUpdateAddressField(t *testing.T) {
+func TestUpdateItem(t *testing.T) {
 	addressOriginal := randomField()
 	addressReplacer := randomField()
 	phone := addressOriginal.Phone
@@ -72,45 +75,46 @@ func TestUpdateAddressField(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	repo := mock_repository.NewMockRepository(ctrl)
+	repo := mockapp.NewMockStorage(ctrl)
 
 	repo.EXPECT().
-		CreateAddressField(gomock.Eq(&addressOriginal)).
+		CreateItem(gomock.Eq(&addressOriginal)).
 		Return(gomock.Nil()).Times(1)
 
 	repo.EXPECT().
-		UpdateAddressField(
+		UpdateItem(
 			gomock.Eq(phone),
 			gomock.Eq(&addressReplacer),
 		).
 		Return(gomock.Nil()).Times(1)
 
-	if err := r.CreateAddressField(&addressOriginal); err != nil {
+	if err := r.CreateItem(&addressOriginal); err != nil {
 		t.Fail()
 	}
 
-	if err := r.UpdateAddressField(phone, &addressReplacer); err != nil {
+	if err := r.UpdateItem(phone, &addressReplacer); err != nil {
 		t.Fail()
 	}
 }
 
-func TestDeleteAddressField(t *testing.T) {
+func TestDeleteItem(t *testing.T) {
 	address := randomField()
 	phone := address.Phone
 
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	repo := mock_repository.NewMockRepository(ctrl)
+	repo := mockapp.NewMockStorage(ctrl)
+
 	repo.EXPECT().
-		DeleteAddressField(gomock.Eq(phone)).
+		DeleteItem(gomock.Eq(phone)).
 		Return(gomock.Nil()).Times(1)
 
-	if err := r.CreateAddressField(&address); err != nil {
+	if err := r.CreateItem(&address); err != nil {
 		t.Fail()
 	}
 
-	if err := r.DeleteAddressField(phone); err != nil {
+	if err := r.DeleteItem(phone); err != nil {
 		t.Fail()
 	}
 }

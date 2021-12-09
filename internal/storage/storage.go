@@ -1,8 +1,9 @@
 package storage
 
 import (
-	"fmt"
 	"github.com/cyneruxyz/address-book/gen/proto"
+
+	"fmt"
 	"regexp"
 	"sync"
 )
@@ -14,11 +15,11 @@ type AddressBook struct {
 	Book map[*proto.Phone]*proto.AddressField
 }
 
-func NewAddressBook() *AddressBook {
+func New() *AddressBook {
 	return &AddressBook{}
 }
 
-func (ab *AddressBook) CreateAddressField(af *proto.AddressField) (err error) {
+func (ab *AddressBook) CreateItem(af *proto.AddressField) error {
 	ab.Lock()
 	defer ab.Unlock()
 	if _, ok := ab.Book[af.Phone]; ok {
@@ -29,22 +30,22 @@ func (ab *AddressBook) CreateAddressField(af *proto.AddressField) (err error) {
 	return nil
 }
 
-func (ab *AddressBook) GetAddressFields(param string) (fields []*proto.AddressField, err error) {
+func (ab *AddressBook) ReadItem(param string) (fields []*proto.AddressField, err error) {
 	ab.RLock()
 	defer ab.RUnlock()
 
-	if field, ok := ab.getAddressByPhone(&proto.Phone{Phone: param}); ok {
+	if field, ok := ab.getItemByPhone(&proto.Phone{Phone: param}); ok {
 		return []*proto.AddressField{field}, nil
 	}
 
-	if field, ok := ab.getAddressArray(param); ok {
+	if field, ok := ab.getItemArray(param); ok {
 		return field, nil
 	}
 
 	return nil, fmt.Errorf(elementByParameterNotFound, param)
 }
 
-func (ab *AddressBook) UpdateAddressField(phone *proto.Phone, replace *proto.AddressField) error {
+func (ab *AddressBook) UpdateItem(phone *proto.Phone, replace *proto.AddressField) error {
 	ab.Lock()
 	defer ab.Unlock()
 	if _, ok := ab.Book[phone]; ok {
@@ -54,7 +55,7 @@ func (ab *AddressBook) UpdateAddressField(phone *proto.Phone, replace *proto.Add
 	return fmt.Errorf(elementByParameterNotFound, phone)
 }
 
-func (ab *AddressBook) DeleteAddressField(p *proto.Phone) (err error) {
+func (ab *AddressBook) DeleteItem(p *proto.Phone) (err error) {
 	ab.Lock()
 	defer ab.Unlock()
 
@@ -66,7 +67,7 @@ func (ab *AddressBook) DeleteAddressField(p *proto.Phone) (err error) {
 
 }
 
-func (ab *AddressBook) getAddressByPhone(p *proto.Phone) (field *proto.AddressField, ok bool) {
+func (ab *AddressBook) getItemByPhone(p *proto.Phone) (field *proto.AddressField, ok bool) {
 	if s, ok := ab.Book[p]; ok {
 		return s, ok
 	}
@@ -74,7 +75,7 @@ func (ab *AddressBook) getAddressByPhone(p *proto.Phone) (field *proto.AddressFi
 	return nil, false
 }
 
-func (ab *AddressBook) getAddressArray(param string) (field []*proto.AddressField, ok bool) {
+func (ab *AddressBook) getItemArray(param string) (field []*proto.AddressField, ok bool) {
 	for k, v := range ab.Book {
 		if wildcard(v.Name, param) || wildcard(v.Address, param) {
 			field = append(field, ab.Book[k])

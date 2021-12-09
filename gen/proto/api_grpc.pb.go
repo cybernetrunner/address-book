@@ -14,49 +14,49 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// APIServiceClient is the client API for APIService service.
+// AddressBookServiceClient is the client API for AddressBookService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type APIServiceClient interface {
+type AddressBookServiceClient interface {
 	Echo(ctx context.Context, in *EchoRequest, opts ...grpc.CallOption) (*Response, error)
-	CreateAddressField(ctx context.Context, in *AddressFieldRequest, opts ...grpc.CallOption) (*Response, error)
-	ReadAddressField(ctx context.Context, in *AddressFieldQuery, opts ...grpc.CallOption) (APIService_ReadAddressFieldClient, error)
-	UpdateAddressField(ctx context.Context, in *AddressFieldUpdateRequest, opts ...grpc.CallOption) (*Response, error)
-	DeleteAddressField(ctx context.Context, in *Phone, opts ...grpc.CallOption) (*Response, error)
+	Create(ctx context.Context, in *AddressFieldRequest, opts ...grpc.CallOption) (*Response, error)
+	Read(ctx context.Context, in *AddressFieldQuery, opts ...grpc.CallOption) (AddressBookService_ReadClient, error)
+	Update(ctx context.Context, in *AddressFieldUpdateRequest, opts ...grpc.CallOption) (*Response, error)
+	Delete(ctx context.Context, in *Phone, opts ...grpc.CallOption) (*Response, error)
 }
 
-type aPIServiceClient struct {
+type addressBookServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewAPIServiceClient(cc grpc.ClientConnInterface) APIServiceClient {
-	return &aPIServiceClient{cc}
+func NewAddressBookServiceClient(cc grpc.ClientConnInterface) AddressBookServiceClient {
+	return &addressBookServiceClient{cc}
 }
 
-func (c *aPIServiceClient) Echo(ctx context.Context, in *EchoRequest, opts ...grpc.CallOption) (*Response, error) {
+func (c *addressBookServiceClient) Echo(ctx context.Context, in *EchoRequest, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/cyneruxyz.api.v1.APIService/Echo", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/cyneruxyz.api.v1.AddressBookService/Echo", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *aPIServiceClient) CreateAddressField(ctx context.Context, in *AddressFieldRequest, opts ...grpc.CallOption) (*Response, error) {
+func (c *addressBookServiceClient) Create(ctx context.Context, in *AddressFieldRequest, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/cyneruxyz.api.v1.APIService/CreateAddressField", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/cyneruxyz.api.v1.AddressBookService/Create", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *aPIServiceClient) ReadAddressField(ctx context.Context, in *AddressFieldQuery, opts ...grpc.CallOption) (APIService_ReadAddressFieldClient, error) {
-	stream, err := c.cc.NewStream(ctx, &APIService_ServiceDesc.Streams[0], "/cyneruxyz.api.v1.APIService/ReadAddressField", opts...)
+func (c *addressBookServiceClient) Read(ctx context.Context, in *AddressFieldQuery, opts ...grpc.CallOption) (AddressBookService_ReadClient, error) {
+	stream, err := c.cc.NewStream(ctx, &AddressBookService_ServiceDesc.Streams[0], "/cyneruxyz.api.v1.AddressBookService/Read", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &aPIServiceReadAddressFieldClient{stream}
+	x := &addressBookServiceReadClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -66,16 +66,16 @@ func (c *aPIServiceClient) ReadAddressField(ctx context.Context, in *AddressFiel
 	return x, nil
 }
 
-type APIService_ReadAddressFieldClient interface {
+type AddressBookService_ReadClient interface {
 	Recv() (*AddressField, error)
 	grpc.ClientStream
 }
 
-type aPIServiceReadAddressFieldClient struct {
+type addressBookServiceReadClient struct {
 	grpc.ClientStream
 }
 
-func (x *aPIServiceReadAddressFieldClient) Recv() (*AddressField, error) {
+func (x *addressBookServiceReadClient) Recv() (*AddressField, error) {
 	m := new(AddressField)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -83,189 +83,189 @@ func (x *aPIServiceReadAddressFieldClient) Recv() (*AddressField, error) {
 	return m, nil
 }
 
-func (c *aPIServiceClient) UpdateAddressField(ctx context.Context, in *AddressFieldUpdateRequest, opts ...grpc.CallOption) (*Response, error) {
+func (c *addressBookServiceClient) Update(ctx context.Context, in *AddressFieldUpdateRequest, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/cyneruxyz.api.v1.APIService/UpdateAddressField", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/cyneruxyz.api.v1.AddressBookService/Update", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *aPIServiceClient) DeleteAddressField(ctx context.Context, in *Phone, opts ...grpc.CallOption) (*Response, error) {
+func (c *addressBookServiceClient) Delete(ctx context.Context, in *Phone, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/cyneruxyz.api.v1.APIService/DeleteAddressField", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/cyneruxyz.api.v1.AddressBookService/Delete", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// APIServiceServer is the server API for APIService service.
-// All implementations must embed UnimplementedAPIServiceServer
+// AddressBookServiceServer is the server API for AddressBookService service.
+// All implementations must embed UnimplementedAddressBookServiceServer
 // for forward compatibility
-type APIServiceServer interface {
+type AddressBookServiceServer interface {
 	Echo(context.Context, *EchoRequest) (*Response, error)
-	CreateAddressField(context.Context, *AddressFieldRequest) (*Response, error)
-	ReadAddressField(*AddressFieldQuery, APIService_ReadAddressFieldServer) error
-	UpdateAddressField(context.Context, *AddressFieldUpdateRequest) (*Response, error)
-	DeleteAddressField(context.Context, *Phone) (*Response, error)
-	mustEmbedUnimplementedAPIServiceServer()
+	Create(context.Context, *AddressFieldRequest) (*Response, error)
+	Read(*AddressFieldQuery, AddressBookService_ReadServer) error
+	Update(context.Context, *AddressFieldUpdateRequest) (*Response, error)
+	Delete(context.Context, *Phone) (*Response, error)
+	mustEmbedUnimplementedAddressBookServiceServer()
 }
 
-// UnimplementedAPIServiceServer must be embedded to have forward compatible implementations.
-type UnimplementedAPIServiceServer struct {
+// UnimplementedAddressBookServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedAddressBookServiceServer struct {
 }
 
-func (UnimplementedAPIServiceServer) Echo(context.Context, *EchoRequest) (*Response, error) {
+func (UnimplementedAddressBookServiceServer) Echo(context.Context, *EchoRequest) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Echo not implemented")
 }
-func (UnimplementedAPIServiceServer) CreateAddressField(context.Context, *AddressFieldRequest) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateAddressField not implemented")
+func (UnimplementedAddressBookServiceServer) Create(context.Context, *AddressFieldRequest) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
 }
-func (UnimplementedAPIServiceServer) ReadAddressField(*AddressFieldQuery, APIService_ReadAddressFieldServer) error {
-	return status.Errorf(codes.Unimplemented, "method ReadAddressField not implemented")
+func (UnimplementedAddressBookServiceServer) Read(*AddressFieldQuery, AddressBookService_ReadServer) error {
+	return status.Errorf(codes.Unimplemented, "method Read not implemented")
 }
-func (UnimplementedAPIServiceServer) UpdateAddressField(context.Context, *AddressFieldUpdateRequest) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateAddressField not implemented")
+func (UnimplementedAddressBookServiceServer) Update(context.Context, *AddressFieldUpdateRequest) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
 }
-func (UnimplementedAPIServiceServer) DeleteAddressField(context.Context, *Phone) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteAddressField not implemented")
+func (UnimplementedAddressBookServiceServer) Delete(context.Context, *Phone) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
 }
-func (UnimplementedAPIServiceServer) mustEmbedUnimplementedAPIServiceServer() {}
+func (UnimplementedAddressBookServiceServer) mustEmbedUnimplementedAddressBookServiceServer() {}
 
-// UnsafeAPIServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to APIServiceServer will
+// UnsafeAddressBookServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to AddressBookServiceServer will
 // result in compilation errors.
-type UnsafeAPIServiceServer interface {
-	mustEmbedUnimplementedAPIServiceServer()
+type UnsafeAddressBookServiceServer interface {
+	mustEmbedUnimplementedAddressBookServiceServer()
 }
 
-func RegisterAPIServiceServer(s grpc.ServiceRegistrar, srv APIServiceServer) {
-	s.RegisterService(&APIService_ServiceDesc, srv)
+func RegisterAddressBookServiceServer(s grpc.ServiceRegistrar, srv AddressBookServiceServer) {
+	s.RegisterService(&AddressBookService_ServiceDesc, srv)
 }
 
-func _APIService_Echo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _AddressBookService_Echo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(EchoRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(APIServiceServer).Echo(ctx, in)
+		return srv.(AddressBookServiceServer).Echo(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/cyneruxyz.api.v1.APIService/Echo",
+		FullMethod: "/cyneruxyz.api.v1.AddressBookService/Echo",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(APIServiceServer).Echo(ctx, req.(*EchoRequest))
+		return srv.(AddressBookServiceServer).Echo(ctx, req.(*EchoRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _APIService_CreateAddressField_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _AddressBookService_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AddressFieldRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(APIServiceServer).CreateAddressField(ctx, in)
+		return srv.(AddressBookServiceServer).Create(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/cyneruxyz.api.v1.APIService/CreateAddressField",
+		FullMethod: "/cyneruxyz.api.v1.AddressBookService/Create",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(APIServiceServer).CreateAddressField(ctx, req.(*AddressFieldRequest))
+		return srv.(AddressBookServiceServer).Create(ctx, req.(*AddressFieldRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _APIService_ReadAddressField_Handler(srv interface{}, stream grpc.ServerStream) error {
+func _AddressBookService_Read_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(AddressFieldQuery)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(APIServiceServer).ReadAddressField(m, &aPIServiceReadAddressFieldServer{stream})
+	return srv.(AddressBookServiceServer).Read(m, &addressBookServiceReadServer{stream})
 }
 
-type APIService_ReadAddressFieldServer interface {
+type AddressBookService_ReadServer interface {
 	Send(*AddressField) error
 	grpc.ServerStream
 }
 
-type aPIServiceReadAddressFieldServer struct {
+type addressBookServiceReadServer struct {
 	grpc.ServerStream
 }
 
-func (x *aPIServiceReadAddressFieldServer) Send(m *AddressField) error {
+func (x *addressBookServiceReadServer) Send(m *AddressField) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func _APIService_UpdateAddressField_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _AddressBookService_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AddressFieldUpdateRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(APIServiceServer).UpdateAddressField(ctx, in)
+		return srv.(AddressBookServiceServer).Update(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/cyneruxyz.api.v1.APIService/UpdateAddressField",
+		FullMethod: "/cyneruxyz.api.v1.AddressBookService/Update",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(APIServiceServer).UpdateAddressField(ctx, req.(*AddressFieldUpdateRequest))
+		return srv.(AddressBookServiceServer).Update(ctx, req.(*AddressFieldUpdateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _APIService_DeleteAddressField_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _AddressBookService_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Phone)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(APIServiceServer).DeleteAddressField(ctx, in)
+		return srv.(AddressBookServiceServer).Delete(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/cyneruxyz.api.v1.APIService/DeleteAddressField",
+		FullMethod: "/cyneruxyz.api.v1.AddressBookService/Delete",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(APIServiceServer).DeleteAddressField(ctx, req.(*Phone))
+		return srv.(AddressBookServiceServer).Delete(ctx, req.(*Phone))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// APIService_ServiceDesc is the grpc.ServiceDesc for APIService service.
+// AddressBookService_ServiceDesc is the grpc.ServiceDesc for AddressBookService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var APIService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "cyneruxyz.api.v1.APIService",
-	HandlerType: (*APIServiceServer)(nil),
+var AddressBookService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "cyneruxyz.api.v1.AddressBookService",
+	HandlerType: (*AddressBookServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "Echo",
-			Handler:    _APIService_Echo_Handler,
+			Handler:    _AddressBookService_Echo_Handler,
 		},
 		{
-			MethodName: "CreateAddressField",
-			Handler:    _APIService_CreateAddressField_Handler,
+			MethodName: "Create",
+			Handler:    _AddressBookService_Create_Handler,
 		},
 		{
-			MethodName: "UpdateAddressField",
-			Handler:    _APIService_UpdateAddressField_Handler,
+			MethodName: "Update",
+			Handler:    _AddressBookService_Update_Handler,
 		},
 		{
-			MethodName: "DeleteAddressField",
-			Handler:    _APIService_DeleteAddressField_Handler,
+			MethodName: "Delete",
+			Handler:    _AddressBookService_Delete_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
 		{
-			StreamName:    "ReadAddressField",
-			Handler:       _APIService_ReadAddressField_Handler,
+			StreamName:    "Read",
+			Handler:       _AddressBookService_Read_Handler,
 			ServerStreams: true,
 		},
 	},

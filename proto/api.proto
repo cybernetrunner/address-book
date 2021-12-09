@@ -5,36 +5,36 @@ option go_package = "./proto";
 import "google/api/annotations.proto";
 
 
-service APIService {
+service AddressBookService {
   rpc Echo(EchoRequest) returns(Response) {
     option (google.api.http) = {
       post:  "/echo"
       body: "*"
     };
   }
-  rpc CreateAddressField(AddressFieldRequest) returns (Response) {
+  rpc Create(AddressFieldRequest) returns (Response) {
     option (google.api.http) = {
-      post: "/addressbook"
+      post: "/app"
       body: "*"
     };
   }
 
-  rpc ReadAddressField(AddressFieldQuery) returns (stream AddressField) {
+  rpc Read(AddressFieldQuery) returns (stream AddressField) {
     option (google.api.http) = {
-      get:  "/addressbook"
+      get:  "/app"
     };
   }
 
-  rpc UpdateAddressField(AddressFieldUpdateRequest) returns (Response) {
+  rpc Update(AddressFieldUpdateRequest) returns (Response) {
     option (google.api.http) = {
-      put:  "/addressbook",
+      put:  "/app",
       body: "*"
     };
   }
   
-  rpc DeleteAddressField(Phone) returns (Response) {
+  rpc Delete(Phone) returns (Response) {
     option (google.api.http) = {
-      delete: "/addressbook"
+      delete: "/app"
     };
   }
 }
