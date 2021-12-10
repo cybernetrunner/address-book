@@ -50,6 +50,10 @@ func TestReadItem(t *testing.T) {
 	repo := mockapp.NewMockStorage(ctrl)
 
 	repo.EXPECT().
+		CreateItem(gomock.Eq(&address)).
+		Return(gomock.Nil()).Times(1)
+
+	repo.EXPECT().
 		ReadItem(gomock.Eq(param)).Times(1).
 		Return(
 			gomock.Eq(append([]*proto.AddressField{}, &address)),
@@ -105,6 +109,10 @@ func TestDeleteItem(t *testing.T) {
 	defer ctrl.Finish()
 
 	repo := mockapp.NewMockStorage(ctrl)
+
+	repo.EXPECT().
+		CreateItem(gomock.Eq(&address)).
+		Return(gomock.Nil()).Times(1)
 
 	repo.EXPECT().
 		DeleteItem(gomock.Eq(phone)).

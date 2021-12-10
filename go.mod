@@ -4,6 +4,8 @@ go 1.16
 
 require (
 	github.com/brianvoe/gofakeit/v6 v6.10.0
+	github.com/co89757/glob4go v0.0.0-20170622070541-e15066533195
+	github.com/gobwas/glob v0.2.3
 	github.com/golang/glog v1.0.0
 	github.com/golang/mock v1.4.4
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.7.1
