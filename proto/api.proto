@@ -1,0 +1,71 @@
+syntax = "proto3";
+package cyneruxyz.api.v1;
+option go_package = "./proto";
+
+import "google/api/annotations.proto";
+
+
+service AddressBookService {
+  rpc Echo(EchoRequest) returns(Response) {
+    option (google.api.http) = {
+      post:  "/echo"
+      body: "*"
+    };
+  }
+  rpc Create(AddressFieldRequest) returns (Response) {
+    option (google.api.http) = {
+      post: "/app"
+      body: "*"
+    };
+  }
+
+  rpc Read(AddressFieldQuery) returns (stream AddressField) {
+    option (google.api.http) = {
+      get:  "/app"
+    };
+  }
+
+  rpc Update(AddressFieldUpdateRequest) returns (Response) {
+    option (google.api.http) = {
+      put:  "/app",
+      body: "*"
+    };
+  }
+  
+  rpc Delete(Phone) returns (Response) {
+    option (google.api.http) = {
+      delete: "/app"
+    };
+  }
+}
+
+message AddressField {
+  string name = 1;
+  string address = 2;
+  Phone phone = 3; // Unique ID number for this person
+}
+
+message Phone {
+  string phone = 1;
+}
+
+message AddressFieldQuery {
+  string param = 1;
+}
+
+message AddressFieldRequest {
+  AddressField field = 1;
+}
+
+message AddressFieldUpdateRequest {
+  Phone phone = 1;
+  AddressField replacementField = 2;
+}
+
+message EchoRequest {
+  string message = 1;
+}
+
+message Response {
+  string message = 1;
+}
