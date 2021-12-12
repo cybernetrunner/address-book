@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/cyneruxyz/address-book/gen/proto"
 	"github.com/cyneruxyz/address-book/internal/database/model"
-	"github.com/cyneruxyz/address-book/pkg/config"
+	"github.com/spf13/viper"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -15,15 +15,15 @@ type Database struct {
 	orm *gorm.DB
 }
 
-func New(conf *config.Config) (*Database, error) {
+func New(conf *viper.Viper) (*Database, error) {
 	dsn := fmt.Sprintf(
 		"user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=%s",
-		conf.GetString("database.user"),
-		conf.GetString("database.password"),
-		conf.GetString("database.dbname"),
-		conf.GetString("database.port"),
-		conf.GetString("database.sslmode"),
-		conf.GetString("database.timezone"),
+		conf.GetString("DB_USER"),
+		conf.GetString("DB_PASSWORD"),
+		conf.GetString("DB_NAME"),
+		conf.GetString("DB_PORT"),
+		conf.GetString("DB_SSLMODE"),
+		conf.GetString("DB_TIMEZONE"),
 	)
 
 	db, err := gorm.Open(postgres.New(

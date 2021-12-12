@@ -3,8 +3,8 @@ package app
 import (
 	"github.com/cyneruxyz/address-book/gen/proto"
 	"github.com/cyneruxyz/address-book/internal/database"
-	"github.com/cyneruxyz/address-book/pkg/config"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/spf13/viper"
 	"google.golang.org/grpc"
 
 	"context"
@@ -14,9 +14,9 @@ import (
 
 var ()
 
-func Run(conf *config.Config, db *database.Database) error {
-	httpPort := conf.GetString("server.port.http")
-	grpcPort := conf.GetString("server.port.grpc")
+func Run(conf *viper.Viper, db *database.Database) error {
+	httpPort := conf.GetString("SERVER_HTTP_PORT")
+	grpcPort := conf.GetString("SERVER_GRPC_PORT")
 
 	ctx, cancel := context.WithCancel(context.Background())
 

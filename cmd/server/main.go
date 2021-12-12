@@ -1,16 +1,14 @@
 package main
 
 import (
-	"bytes"
 	"github.com/cyneruxyz/address-book/internal/app"
 	"github.com/cyneruxyz/address-book/internal/database"
-	"github.com/cyneruxyz/address-book/pkg/config"
 	"github.com/golang/glog"
 	"github.com/spf13/viper"
 )
 
 var (
-	conf *config.Config
+	conf *viper.Viper
 	db   *database.Database
 	err  error
 
@@ -20,9 +18,9 @@ var (
 
 func main() {
 	conf = viper.New()
-	conf.SetConfigType("yaml")
+	conf.SetConfigFile(".env")
 
-	if err = conf.ReadConfig(bytes.NewBuffer(config.Yaml)); err != nil {
+	if err = conf.ReadInConfig(); err != nil {
 		glog.Fatalf(errConfigFile, err)
 	}
 
