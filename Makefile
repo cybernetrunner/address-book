@@ -1,17 +1,18 @@
-create:
+proto:
 	buf generate
-	mockgen -source=internal/app/intarfaces.go --destination=internal/mock/repo.go Storage
 
-clear:
-	rm -r gen
-	rm -r bin
+test:
+	go test ./... -race
 
 depend:
 	go mod tidy -go=1.16
 	go mod vendor
 
-test:
-	go test ./... -race
+run:
+	go fmt ./...
+	golangci-lint run ./...
+	echo "DEBUG: RUN SERVER"
+	go run cmd/server/main.go
 
 build:
 	go fmt ./...
@@ -19,7 +20,13 @@ build:
 	mkdir -p bin
 	go build -o bin/server cmd/server/main.go
 
-run:
-	go fmt ./...
-	golangci-lint run ./...
-	go run cmd/server/main.go
+clear:
+	rm -r gen
+	rm -r bin
+
+deploy:
+	minikube start --vm-driver=hyperkit
+	minikube status
+	kubectl apply -f k8s --validate=false
+	kubectl top node
+	minikube dashboard

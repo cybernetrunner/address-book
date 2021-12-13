@@ -2,8 +2,9 @@ package app
 
 import (
 	"github.com/cyneruxyz/address-book/gen/proto"
-	"github.com/cyneruxyz/address-book/internal/storage"
+	"github.com/cyneruxyz/address-book/internal/database"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/spf13/viper"
 	"google.golang.org/grpc"
 
 	"context"
@@ -11,49 +12,12 @@ import (
 	"net/http"
 )
 
-var (
-	repo     Storage = storage.New()
-	httpPort         = "8081"
-	grpcPort         = "9090"
-)
+var ()
 
-type server struct {
-	proto.AddressBookServiceServer
-}
+func Run(conf *viper.Viper, db *database.Database) error {
+	httpPort := conf.GetString("SERVER_HTTP_PORT")
+	grpcPort := conf.GetString("SERVER_GRPC_PORT")
 
-func (s *server) Echo(ctx context.Context, req *proto.EchoRequest) (*proto.Response, error) {
-	return &proto.Response{Message: req.Message}, nil
-}
-
-func (s *server) Create(ctx context.Context, req *proto.AddressFieldRequest) (*proto.AddressField, error) {
-	if err := repo.CreateItem(req.Field); err != nil {
-		return nil, err
-	}
-
-	return req.Field, nil
-}
-
-func (s *server) Read(ctx context.Context, query *proto.AddressFieldQuery) ([]*proto.AddressField, error) {
-	return repo.ReadItem(query.Param)
-}
-
-func (s *server) Update(ctx context.Context, req *proto.AddressFieldUpdateRequest) (*proto.Response, error) {
-	if err := repo.UpdateItem(req.Phone, req.ReplacementField); err != nil {
-		return nil, err
-	}
-
-	return &proto.Response{Message: "Address field updated successfully"}, nil
-}
-
-func (s *server) Delete(ctx context.Context, req *proto.Phone, opts ...grpc.CallOption) (*proto.Response, error) {
-	if err := repo.DeleteItem(req); err != nil {
-		return nil, err
-	}
-
-	return &proto.Response{Message: "Address field deleted successfully"}, nil
-}
-
-func Run() error {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	defer cancel()
@@ -68,12 +32,12 @@ func Run() error {
 		return err
 	}
 
-	err = proto.RegisterAddressBookServiceHandlerServer(ctx, mux, server{}.AddressBookServiceServer)
+	err = proto.RegisterAddressBookServiceHandlerServer(ctx, mux, server{repo: db}.AddressBookServiceServer)
 	if err != nil {
 		return err
 	}
 
-	port, _ := net.Listen("tcp", grpcPort)
+	port, _ := net.Listen("tcp", string(grpcPort))
 	srv := grpc.NewServer()
 
 	go func() {
