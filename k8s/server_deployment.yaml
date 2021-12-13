@@ -1,0 +1,24 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: address-book
+spec:
+  template:
+    metadata:
+      labels:
+        app: address-book
+    spec:
+      containers:
+      - image: cybernetrunner/address-book:latest
+        name: address-book
+        env:
+        - name: POSTGRES_PORT
+          value: 5432
+        - name: POSTGRES_DB
+          value: gorm
+        - name: POSTGRES_USER
+          value: gorm
+        - name: POSTGRES_PASSWORD
+          value: gorm12345
+        ports:
+        - containerPort: 8081
