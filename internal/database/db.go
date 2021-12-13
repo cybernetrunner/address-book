@@ -3,20 +3,16 @@ package database
 import (
 	"fmt"
 	"github.com/cyneruxyz/address-book/gen/proto"
-	"github.com/cyneruxyz/address-book/internal/database/model"
+	m "github.com/cyneruxyz/address-book/internal/database/model"
 	"github.com/spf13/viper"
-	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-var fieldModel = &model.AddressField{}
+var (
+	conf *viper.Viper
 
-type Database struct {
-	orm *gorm.DB
-}
-
-func New(conf *viper.Viper) (*Database, error) {
-	dsn := fmt.Sprintf(
+	model = &m.Fields{}
+	DSN   = fmt.Sprintf(
 		"user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=%s",
 		conf.GetString("DB_USER"),
 		conf.GetString("DB_PASSWORD"),
@@ -25,33 +21,23 @@ func New(conf *viper.Viper) (*Database, error) {
 		conf.GetString("DB_SSLMODE"),
 		conf.GetString("DB_TIMEZONE"),
 	)
+)
 
-	db, err := gorm.Open(postgres.New(
-		postgres.Config{
-			DSN:                  dsn,
-			PreferSimpleProtocol: true, // disables implicit prepared statement usage
-		}),
-		&gorm.Config{},
-	)
-
-	return &Database{db}, err
-}
-
-func (db *Database) Migrate() error {
-	return db.orm.AutoMigrate(fieldModel)
+type Database struct {
+	ORM *gorm.DB
 }
 
 func (db *Database) CreateItem(field *proto.AddressField) error {
-	return db.orm.Create(fieldModel.Prepare(field)).Error
+	return db.ORM.Create(model.Prepare(field)).Error
 }
 
 func (db *Database) ReadItem(param string) (fields []*proto.AddressField, err error) {
-	var items []model.AddressField
+	var items []m.Fields
 
-	err = db.orm.Model(fieldModel).
-		Where("name = ?", param).
-		Or("address = ?", param).
-		Or("phone = ?", param).
+	err = db.ORM.Model(model).
+		Where("name LIKE ?", param).
+		Or("address LIKE ?", param).
+		Or("phone LIKE ?", param).
 		Limit(100).Find(items).Error
 
 	if err != nil {
@@ -66,9 +52,9 @@ func (db *Database) ReadItem(param string) (fields []*proto.AddressField, err er
 }
 
 func (db *Database) UpdateItem(phone *proto.Phone, replace *proto.AddressField) error {
-	var item *model.AddressField
+	var item *m.Fields
 
-	if err := db.orm.Where("phone = ?", phone).First(item).Error; err != nil {
+	if err := db.ORM.Where("phone = ?", phone).First(item).Error; err != nil {
 		return err
 	}
 
@@ -76,19 +62,12 @@ func (db *Database) UpdateItem(phone *proto.Phone, replace *proto.AddressField) 
 	item.Address = replace.Address
 	item.Phone = replace.Phone.Phone
 
-	return db.orm.Save(item).Error
+	return db.ORM.Save(item).Error
 }
 
-func (db *Database) DeleteItem(phone *proto.Phone) error {
-	var item *model.AddressField
+func (db *Database) DeleteItem(phone *proto.Phone) {
+	var item *m.Fields
 
-	if err := db.orm.Where("phone = ?", phone).First(item).Error; err != nil {
-		return err
-	}
-
-	if err := db.orm.Where("phone = ?", phone).Delete(item).Error; err != nil {
-		return err
-	}
-
-	return nil
+	db.ORM.Where("phone = ?", phone).First(item)
+	db.ORM.Where("phone = ?", phone).Delete(item)
 }

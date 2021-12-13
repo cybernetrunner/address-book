@@ -3,8 +3,11 @@ package main
 import (
 	"github.com/cyneruxyz/address-book/internal/app"
 	"github.com/cyneruxyz/address-book/internal/database"
+	"github.com/cyneruxyz/address-book/internal/database/model"
 	"github.com/golang/glog"
 	"github.com/spf13/viper"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 var (
@@ -16,7 +19,8 @@ var (
 	errDatabase   = "Fatal error database: %w \n"
 )
 
-func main() {
+func init() {
+	// config initialization
 	conf = viper.New()
 	conf.SetConfigFile(".env")
 
@@ -24,15 +28,27 @@ func main() {
 		glog.Fatalf(errConfigFile, err)
 	}
 
-	db, err = database.New(conf)
+	// orm initialization
+	orm, err := gorm.Open(postgres.New(
+		postgres.Config{
+			DSN:                  database.DSN,
+			PreferSimpleProtocol: true,
+		}),
+		&gorm.Config{},
+	)
 	if err != nil {
 		glog.Fatalf(errDatabase, err)
 	}
 
-	if err = db.Migrate(); err != nil {
+	db = &database.Database{ORM: orm}
+
+	//  migrate model to database
+	if err = db.ORM.AutoMigrate(&model.Fields{}); err != nil {
 		glog.Fatalf(errDatabase, err)
 	}
+}
 
+func main() {
 	if err = app.Run(conf, db); err != nil {
 		glog.Fatal(err)
 	}

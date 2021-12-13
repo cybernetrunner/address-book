@@ -36,9 +36,7 @@ func (s *server) Update(ctx context.Context, req *proto.AddressFieldUpdateReques
 }
 
 func (s *server) Delete(ctx context.Context, req *proto.Phone, opts ...grpc.CallOption) (*proto.Response, error) {
-	if err := s.repo.DeleteItem(req); err != nil {
-		return nil, err
-	}
+	s.repo.DeleteItem(req)
 
 	return &proto.Response{Message: "Address field deleted successfully"}, nil
 }
