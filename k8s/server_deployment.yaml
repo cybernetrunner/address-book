@@ -1,16 +1,25 @@
-apiVersion: apps/v1beta1
+---
 kind: Deployment
+apiVersion: apps/v1
+
 metadata:
-  name: address-book
+    name: go-web-app
 spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: go-web-app
   template:
     metadata:
       labels:
-        app: address-book
+        name: go-web-app
     spec:
       containers:
-      - image: cybernetrunner/address-book:latest
-        name: address-book
+      - name: application
+        image: cybernetrunner/address-book:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8081
         env:
         - name: POSTGRES_PORT
           value: 5432
@@ -20,5 +29,3 @@ spec:
           value: gorm
         - name: POSTGRES_PASSWORD
           value: gorm12345
-        ports:
-        - containerPort: 8081

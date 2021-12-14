@@ -28,9 +28,10 @@ clear:
 	rm -r bin
 
 deploy:
-	minikube start --vm-driver=hyperkit
+	minikube start
 	minikube status
 	kubectl apply -f k8s --validate=false
+	kubectl get services
 	kubectl top node
 	minikube dashboard
 
