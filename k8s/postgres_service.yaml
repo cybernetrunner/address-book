@@ -1,0 +1,14 @@
+---
+kind: Service
+apiVersion: v1
+
+metadata:
+  name: postgres-service
+
+spec:
+  type: NodePort
+  clusterIP: 10.0.171.239
+  ports:
+   - port: 5432
+  selector:
+   app: postgres-db

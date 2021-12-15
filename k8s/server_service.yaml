@@ -4,8 +4,10 @@ apiVersion: v1
 
 metadata:
   name: go-web-service
+
 spec:
   type: LoadBalancer
+  clusterIP: 10.0.171.239
   ports:
   - name: http
     port: 80

@@ -4,6 +4,7 @@ apiVersion: apps/v1
 
 metadata:
   name: postgres-db
+
 spec:
   replicas: 1
 
