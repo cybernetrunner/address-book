@@ -2,12 +2,10 @@ package model
 
 import (
 	"github.com/cyneruxyz/address-book/gen/proto"
-	"gorm.io/gorm"
 )
 
 // Fields gorm.Model definition
 type Fields struct {
-	gorm.Model
 	Name    string `gorm:"not null"`
 	Address string `gorm:"not null"`
 	Phone   string `gorm:"unique, primaryKey"`
