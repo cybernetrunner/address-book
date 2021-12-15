@@ -22,10 +22,10 @@ spec:
         - containerPort: 8081
         env:
         - name: POSTGRES_PORT
-          value: 5432
+          value: "5432"
         - name: POSTGRES_DB
-          value: gorm
+          value: "gorm"
         - name: POSTGRES_USER
-          value: gorm
+          value: "gorm"
         - name: POSTGRES_PASSWORD
-          value: gorm12345
+          value: "gorm12345"

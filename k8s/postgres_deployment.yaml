@@ -24,11 +24,11 @@ spec:
         - containerPort: 5432
           env:
           - name: POSTGRES_DB
-            value: gorm
+            value: "gorm"
           - name: POSTGRES_USER
-            value: gorm
+            value: "gorm"
           - name: POSTGRES_PASSWORD
-            value: gorm12345
+            value: "gorm12345"
           volumeMounts:
           - mountPath: "/var/lib/postgresql/data"
             name: "mendix-pgdata"
