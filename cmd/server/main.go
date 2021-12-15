@@ -10,35 +10,26 @@ import (
 	"gorm.io/gorm"
 )
 
-var (
-	conf = &dotenv.DotEnv{
-		ConfigFile: dotenv.DefaultConfigFile,
-	}
-	db  *database.Database
-	orm *gorm.DB
-	err error
-
+const (
 	errConfig   = "Fatal error loading .env file: %s \n"
 	errDatabase = "Fatal error database: %s \n"
 	errServer   = "Fatal error server: %s \n"
 )
 
-func init() {
+func main() {
 	// util initialization
-	err = conf.LoadConfig()
+	conf := dotenv.Init()
+	err := conf.LoadConfig()
 	util.ErrorHandler(errConfig, err)
 
 	// orm initialization
-	orm, err = gorm.Open(
+	orm, err := gorm.Open(
 		postgres.Open(database.GetDSN(conf)),
 		&gorm.Config{},
 	)
 	util.ErrorHandler(errDatabase, err)
 
-	db = &database.Database{ORM: orm}
-}
-
-func main() {
-	util.ErrorHandler(errServer, app.Run(conf, db))
+	// run server
+	util.ErrorHandler(errServer, app.Run(conf, &database.Database{ORM: orm}))
 	defer glog.Flush()
 }
