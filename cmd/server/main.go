@@ -23,8 +23,8 @@ var (
 
 func init() {
 	// util initialization
-	conf.ConfigFile = "."
-	util.ErrorHandler(errConfig, conf.LoadConfig())
+	err = conf.LoadConfig()
+	util.ErrorHandler(errConfig, err)
 
 	// orm initialization
 	orm, err = gorm.Open(
