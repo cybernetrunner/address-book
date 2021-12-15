@@ -3,11 +3,11 @@ kind: Service
 apiVersion: v1
 
 metadata:
-  name: postgres-service
+  name: postgres
 
 spec:
   type: NodePort
-  clusterIP: 10.0.171.239
+  clusterIP: 10.96.0.2
   ports:
    - port: 5432
   selector:

@@ -3,11 +3,11 @@ kind: Service
 apiVersion: v1
 
 metadata:
-  name: go-web-service
+  name: go-web
 
 spec:
   type: LoadBalancer
-  clusterIP: 10.0.171.239
+  clusterIP: 10.96.0.3
   ports:
   - name: http
     port: 80
