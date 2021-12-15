@@ -3,15 +3,14 @@ package main
 import (
 	"github.com/cyneruxyz/address-book/internal/app"
 	"github.com/cyneruxyz/address-book/internal/database"
-	"github.com/cyneruxyz/address-book/internal/database/model"
+	"github.com/cyneruxyz/address-book/pkg/util"
 	"github.com/golang/glog"
-	"github.com/spf13/viper"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 var (
-	conf *viper.Viper
+	conf util.Config
 	db   *database.Database
 	err  error
 
@@ -20,11 +19,9 @@ var (
 )
 
 func init() {
-	// config initialization
-	conf = viper.New()
-	conf.SetConfigFile(".env")
-
-	if err = conf.ReadInConfig(); err != nil {
+	// util initialization
+	conf, err = util.LoadConfig(".")
+	if err != nil {
 		glog.Fatalf(errConfigFile, err)
 	}
 
@@ -41,11 +38,6 @@ func init() {
 	}
 
 	db = &database.Database{ORM: orm}
-
-	//  migrate model to database
-	if err = db.ORM.AutoMigrate(&model.Fields{}); err != nil {
-		glog.Fatalf(errDatabase, err)
-	}
 }
 
 func main() {

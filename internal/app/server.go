@@ -3,8 +3,8 @@ package app
 import (
 	"github.com/cyneruxyz/address-book/gen/proto"
 	"github.com/cyneruxyz/address-book/internal/database"
+	"github.com/cyneruxyz/address-book/pkg/util"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"github.com/spf13/viper"
 	"google.golang.org/grpc"
 
 	"context"
@@ -14,12 +14,8 @@ import (
 
 var ()
 
-func Run(conf *viper.Viper, db *database.Database) error {
-	httpPort := conf.GetString("SERVER_HTTP_PORT")
-	grpcPort := conf.GetString("SERVER_GRPC_PORT")
-
+func Run(conf util.Config, db *database.Database) error {
 	ctx, cancel := context.WithCancel(context.Background())
-
 	defer cancel()
 
 	// Register gRPC server endpoint
@@ -27,7 +23,7 @@ func Run(conf *viper.Viper, db *database.Database) error {
 	mux := runtime.NewServeMux()
 	opts := []grpc.DialOption{grpc.WithInsecure()}
 
-	err := proto.RegisterAddressBookServiceHandlerFromEndpoint(ctx, mux, grpcPort, opts)
+	err := proto.RegisterAddressBookServiceHandlerFromEndpoint(ctx, mux, conf.ServerGRPCPort, opts)
 	if err != nil {
 		return err
 	}
@@ -37,7 +33,7 @@ func Run(conf *viper.Viper, db *database.Database) error {
 		return err
 	}
 
-	port, _ := net.Listen("tcp", string(grpcPort))
+	port, _ := net.Listen("tcp", conf.ServerGRPCPort)
 	srv := grpc.NewServer()
 
 	go func() {
@@ -45,5 +41,5 @@ func Run(conf *viper.Viper, db *database.Database) error {
 	}()
 
 	// Start HTTP server (and proxy calls to gRPC server endpoint)
-	return http.ListenAndServe(httpPort, mux)
+	return http.ListenAndServe(conf.ServerHTTPPort, mux)
 }
