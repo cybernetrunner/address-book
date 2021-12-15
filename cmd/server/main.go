@@ -26,13 +26,7 @@ func init() {
 	}
 
 	// orm initialization
-	orm, err := gorm.Open(postgres.New(
-		postgres.Config{
-			DSN:                  database.DSN,
-			PreferSimpleProtocol: true,
-		}),
-		&gorm.Config{},
-	)
+	orm, err := gorm.Open(postgres.Open(database.DSN), &gorm.Config{})
 	if err != nil {
 		glog.Fatalf(errDatabase, err)
 	}
