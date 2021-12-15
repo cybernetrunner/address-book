@@ -11,10 +11,12 @@ import (
 )
 
 var (
-	conf *dotenv.DotEnv
-	db   *database.Database
-	orm  *gorm.DB
-	err  error
+	conf = &dotenv.DotEnv{
+		ConfigFile: dotenv.DefaultConfigFile,
+	}
+	db  *database.Database
+	orm *gorm.DB
+	err error
 
 	errConfig   = "Fatal error loading .env file: %s \n"
 	errDatabase = "Fatal error database: %s \n"
