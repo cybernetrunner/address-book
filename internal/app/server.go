@@ -3,8 +3,8 @@ package app
 import (
 	"github.com/cyneruxyz/address-book/gen/proto"
 	"github.com/cyneruxyz/address-book/internal/database"
-	"github.com/cyneruxyz/address-book/pkg/util"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/profclems/go-dotenv"
 	"google.golang.org/grpc"
 
 	"context"
@@ -14,7 +14,7 @@ import (
 
 var ()
 
-func Run(conf util.Config, db *database.Database) error {
+func Run(conf *dotenv.DotEnv, db *database.Database) error {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -23,7 +23,7 @@ func Run(conf util.Config, db *database.Database) error {
 	mux := runtime.NewServeMux()
 	opts := []grpc.DialOption{grpc.WithInsecure()}
 
-	err := proto.RegisterAddressBookServiceHandlerFromEndpoint(ctx, mux, conf.ServerGRPCPort, opts)
+	err := proto.RegisterAddressBookServiceHandlerFromEndpoint(ctx, mux, conf.GetString("SERVER_GRPC_PORT"), opts)
 	if err != nil {
 		return err
 	}
@@ -33,7 +33,7 @@ func Run(conf util.Config, db *database.Database) error {
 		return err
 	}
 
-	port, _ := net.Listen("tcp", conf.ServerGRPCPort)
+	port, _ := net.Listen("tcp", conf.GetString("SERVER_GRPC_PORT"))
 	srv := grpc.NewServer()
 
 	go func() {
@@ -41,5 +41,5 @@ func Run(conf util.Config, db *database.Database) error {
 	}()
 
 	// Start HTTP server (and proxy calls to gRPC server endpoint)
-	return http.ListenAndServe(conf.ServerHTTPPort, mux)
+	return http.ListenAndServe(conf.GetString("SERVER_HTTP_PORT"), mux)
 }

@@ -5,39 +5,38 @@ import (
 	"github.com/cyneruxyz/address-book/internal/database"
 	"github.com/cyneruxyz/address-book/pkg/util"
 	"github.com/golang/glog"
+	"github.com/profclems/go-dotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 var (
-	conf util.Config
+	conf *dotenv.DotEnv
 	db   *database.Database
+	orm  *gorm.DB
 	err  error
 
-	errConfigFile = "Fatal error config file: %w \n"
-	errDatabase   = "Fatal error database: %w \n"
+	errConfig   = "Fatal error loading .env file: %s \n"
+	errDatabase = "Fatal error database: %s \n"
+	errServer   = "Fatal error server: %s \n"
 )
 
 func init() {
 	// util initialization
-	conf, err = util.LoadConfig(".")
-	if err != nil {
-		glog.Fatalf(errConfigFile, err)
-	}
+	conf.ConfigFile = "."
+	util.ErrorHandler(errConfig, conf.LoadConfig())
 
 	// orm initialization
-	orm, err := gorm.Open(postgres.Open(database.DSN), &gorm.Config{})
-	if err != nil {
-		glog.Fatalf(errDatabase, err)
-	}
+	orm, err = gorm.Open(
+		postgres.Open(database.GetDSN(conf)),
+		&gorm.Config{},
+	)
+	util.ErrorHandler(errDatabase, err)
 
 	db = &database.Database{ORM: orm}
 }
 
 func main() {
-	if err = app.Run(conf, db); err != nil {
-		glog.Fatal(err)
-	}
-
+	util.ErrorHandler(errServer, app.Run(conf, db))
 	defer glog.Flush()
 }
