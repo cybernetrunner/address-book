@@ -13,14 +13,13 @@ var model = &m.Fields{}
 
 func GetDSN(conf *dotenv.DotEnv) string {
 	return fmt.Sprintf(
-		"host=%s user=%s dbname=%s port=%s sslmode=%s password=%s TimeZone=%s",
+		"host=%s user=%s dbname=%s port=%s sslmode=%s password=%s",
 		conf.GetString("DB_HOST"),
 		conf.GetString("DB_USER"),
 		conf.GetString("DB_NAME"),
 		conf.GetString("DB_PORT"),
 		conf.GetString("DB_SSLMODE"),
 		conf.GetString("DB_PASSWORD"),
-		conf.GetString("DB_TIMEZONE"),
 	)
 }
 
@@ -32,45 +31,45 @@ func (db *Database) CreateItem(field *proto.AddressField) error {
 	return db.ORM.Create(model.Prepare(field)).Error
 }
 
-func (db *Database) ReadItem(param string) (fields []*proto.AddressField, err error) {
+func (db *Database) ReadItem(p string) (buf *proto.AddressFieldResponse, err error) {
 	var items []m.Fields
 
-	param = convertWildcard(param)
+	p = convertWildcard(p)
 	err = db.ORM.Model(model).
-		Where("name LIKE ?", param).
-		Or("address LIKE ?", param).
-		Or("phone LIKE ?", param).
+		Where("name LIKE ?", p).
+		Or("address LIKE ?", p).
+		Or("phone LIKE ?", p).
 		Find(items).Error
 
 	if err != nil {
 		return nil, err
 	}
 
-	for _, item := range items {
-		fields = append(fields, item.GetAddressField())
+	for i, item := range items {
+		buf.Fields[i] = item.GetDTO()
 	}
 
-	return fields, nil
+	return buf, nil
 }
 
-func (db *Database) UpdateItem(phone *proto.Phone, replace *proto.AddressField) error {
+func (db *Database) UpdateItem(p *proto.Phone, r *proto.AddressField) error {
 	var item *m.Fields
 
-	if err := db.ORM.Where("phone = ?", phone).First(item).Error; err != nil {
+	if err := db.ORM.Where("p = ?", p).First(item).Error; err != nil {
 		return err
 	}
 
-	item.Name = replace.Name
-	item.Address = replace.Address
-	item.Phone = replace.Phone.Phone
+	item.Name = r.Name
+	item.Address = r.Address
+	item.Phone = r.Phone.Phone
 
 	return db.ORM.Save(item).Error
 }
 
-func (db *Database) DeleteItem(phone *proto.Phone) {
+func (db *Database) DeleteItem(p *proto.Phone) {
 	var item *m.Fields
 
-	db.ORM.Where("phone = ?", phone).Delete(item)
+	db.ORM.Where("phone = ?", p).Delete(item)
 }
 
 func convertWildcard(s string) string {

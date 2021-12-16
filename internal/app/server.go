@@ -3,6 +3,7 @@ package app
 import (
 	"github.com/cyneruxyz/address-book/gen/proto"
 	"github.com/cyneruxyz/address-book/internal/database"
+	"github.com/cyneruxyz/address-book/pkg/util"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/profclems/go-dotenv"
 	"google.golang.org/grpc"
@@ -12,9 +13,17 @@ import (
 	"net/http"
 )
 
-var ()
+const (
+	errProtoHandlers  = "Fatal error generated proto handlers: %s "
+	errListenAndServe = "Fatal error of http controller: %s "
+)
 
-func Run(conf *dotenv.DotEnv, db *database.Database) error {
+func Run(conf *dotenv.DotEnv, db *database.Database) {
+	serSvr := NewServer(db)
+	grpcPort := conf.GetString("SERVER_GRPC_PORT")
+	httpPort := conf.GetString("SERVER_HTTP_PORT")
+
+	// Initialize context and defer canceling this context
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -23,23 +32,25 @@ func Run(conf *dotenv.DotEnv, db *database.Database) error {
 	mux := runtime.NewServeMux()
 	opts := []grpc.DialOption{grpc.WithInsecure()}
 
-	err := proto.RegisterAddressBookServiceHandlerFromEndpoint(ctx, mux, conf.GetString("SERVER_GRPC_PORT"), opts)
-	if err != nil {
-		return err
-	}
+	// Registering Service Handlers
+	util.ErrorHandler(
+		errProtoHandlers,
+		proto.RegisterAddressBookServiceHandlerFromEndpoint(ctx, mux, grpcPort, opts))
 
-	err = proto.RegisterAddressBookServiceHandlerServer(ctx, mux, server{repo: db}.AddressBookServiceServer)
-	if err != nil {
-		return err
-	}
+	util.ErrorHandler(
+		errProtoHandlers,
+		proto.RegisterAddressBookServiceHandlerServer(ctx, mux, serSvr))
 
-	port, _ := net.Listen("tcp", conf.GetString("SERVER_GRPC_PORT"))
-	srv := grpc.NewServer()
+	// Start gRPC server
+	port, _ := net.Listen("tcp", grpcPort)
+	srvRPC := grpc.NewServer()
 
 	go func() {
-		_ = srv.Serve(port)
+		_ = srvRPC.Serve(port)
 	}()
 
 	// Start HTTP server (and proxy calls to gRPC server endpoint)
-	return http.ListenAndServe(conf.GetString("SERVER_HTTP_PORT"), mux)
+	util.ErrorHandler(
+		errListenAndServe,
+		http.ListenAndServe(httpPort, mux))
 }

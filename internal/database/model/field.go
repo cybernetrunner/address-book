@@ -11,7 +11,7 @@ type Fields struct {
 	Phone   string `gorm:"unique, primaryKey"`
 }
 
-func (model *Fields) Prepare(af *proto.AddressField) *Fields {
+func (m *Fields) Prepare(af *proto.AddressField) *Fields {
 	return &Fields{
 		Name:    af.Name,
 		Address: af.Address,
@@ -19,12 +19,12 @@ func (model *Fields) Prepare(af *proto.AddressField) *Fields {
 	}
 }
 
-func (model *Fields) GetAddressField() *proto.AddressField {
+func (m *Fields) GetDTO() *proto.AddressField {
 	return &proto.AddressField{
-		Name:    model.Name,
-		Address: model.Address,
+		Name:    m.Name,
+		Address: m.Address,
 		Phone: &proto.Phone{
-			Phone: model.Phone,
+			Phone: m.Phone,
 		},
 	}
 }

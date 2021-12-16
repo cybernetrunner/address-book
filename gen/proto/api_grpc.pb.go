@@ -20,7 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 type AddressBookServiceClient interface {
 	Echo(ctx context.Context, in *EchoRequest, opts ...grpc.CallOption) (*Response, error)
 	Create(ctx context.Context, in *AddressFieldRequest, opts ...grpc.CallOption) (*Response, error)
-	Read(ctx context.Context, in *AddressFieldQuery, opts ...grpc.CallOption) (AddressBookService_ReadClient, error)
+	Read(ctx context.Context, in *AddressFieldQuery, opts ...grpc.CallOption) (*AddressFieldResponse, error)
 	Update(ctx context.Context, in *AddressFieldUpdateRequest, opts ...grpc.CallOption) (*Response, error)
 	Delete(ctx context.Context, in *Phone, opts ...grpc.CallOption) (*Response, error)
 }
@@ -51,36 +51,13 @@ func (c *addressBookServiceClient) Create(ctx context.Context, in *AddressFieldR
 	return out, nil
 }
 
-func (c *addressBookServiceClient) Read(ctx context.Context, in *AddressFieldQuery, opts ...grpc.CallOption) (AddressBookService_ReadClient, error) {
-	stream, err := c.cc.NewStream(ctx, &AddressBookService_ServiceDesc.Streams[0], "/cyneruxyz.api.v1.AddressBookService/Read", opts...)
+func (c *addressBookServiceClient) Read(ctx context.Context, in *AddressFieldQuery, opts ...grpc.CallOption) (*AddressFieldResponse, error) {
+	out := new(AddressFieldResponse)
+	err := c.cc.Invoke(ctx, "/cyneruxyz.api.v1.AddressBookService/Read", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &addressBookServiceReadClient{stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	return x, nil
-}
-
-type AddressBookService_ReadClient interface {
-	Recv() (*AddressField, error)
-	grpc.ClientStream
-}
-
-type addressBookServiceReadClient struct {
-	grpc.ClientStream
-}
-
-func (x *addressBookServiceReadClient) Recv() (*AddressField, error) {
-	m := new(AddressField)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
+	return out, nil
 }
 
 func (c *addressBookServiceClient) Update(ctx context.Context, in *AddressFieldUpdateRequest, opts ...grpc.CallOption) (*Response, error) {
@@ -107,7 +84,7 @@ func (c *addressBookServiceClient) Delete(ctx context.Context, in *Phone, opts .
 type AddressBookServiceServer interface {
 	Echo(context.Context, *EchoRequest) (*Response, error)
 	Create(context.Context, *AddressFieldRequest) (*Response, error)
-	Read(*AddressFieldQuery, AddressBookService_ReadServer) error
+	Read(context.Context, *AddressFieldQuery) (*AddressFieldResponse, error)
 	Update(context.Context, *AddressFieldUpdateRequest) (*Response, error)
 	Delete(context.Context, *Phone) (*Response, error)
 	mustEmbedUnimplementedAddressBookServiceServer()
@@ -123,8 +100,8 @@ func (UnimplementedAddressBookServiceServer) Echo(context.Context, *EchoRequest)
 func (UnimplementedAddressBookServiceServer) Create(context.Context, *AddressFieldRequest) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
 }
-func (UnimplementedAddressBookServiceServer) Read(*AddressFieldQuery, AddressBookService_ReadServer) error {
-	return status.Errorf(codes.Unimplemented, "method Read not implemented")
+func (UnimplementedAddressBookServiceServer) Read(context.Context, *AddressFieldQuery) (*AddressFieldResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Read not implemented")
 }
 func (UnimplementedAddressBookServiceServer) Update(context.Context, *AddressFieldUpdateRequest) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
@@ -181,25 +158,22 @@ func _AddressBookService_Create_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
-func _AddressBookService_Read_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(AddressFieldQuery)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
+func _AddressBookService_Read_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddressFieldQuery)
+	if err := dec(in); err != nil {
+		return nil, err
 	}
-	return srv.(AddressBookServiceServer).Read(m, &addressBookServiceReadServer{stream})
-}
-
-type AddressBookService_ReadServer interface {
-	Send(*AddressField) error
-	grpc.ServerStream
-}
-
-type addressBookServiceReadServer struct {
-	grpc.ServerStream
-}
-
-func (x *addressBookServiceReadServer) Send(m *AddressField) error {
-	return x.ServerStream.SendMsg(m)
+	if interceptor == nil {
+		return srv.(AddressBookServiceServer).Read(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/cyneruxyz.api.v1.AddressBookService/Read",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AddressBookServiceServer).Read(ctx, req.(*AddressFieldQuery))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _AddressBookService_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -254,6 +228,10 @@ var AddressBookService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _AddressBookService_Create_Handler,
 		},
 		{
+			MethodName: "Read",
+			Handler:    _AddressBookService_Read_Handler,
+		},
+		{
 			MethodName: "Update",
 			Handler:    _AddressBookService_Update_Handler,
 		},
@@ -262,12 +240,6 @@ var AddressBookService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _AddressBookService_Delete_Handler,
 		},
 	},
-	Streams: []grpc.StreamDesc{
-		{
-			StreamName:    "Read",
-			Handler:       _AddressBookService_Read_Handler,
-			ServerStreams: true,
-		},
-	},
+	Streams:  []grpc.StreamDesc{},
 	Metadata: "proto/api.proto",
 }

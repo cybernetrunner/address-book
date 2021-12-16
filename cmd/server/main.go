@@ -11,25 +11,24 @@ import (
 )
 
 const (
-	errConfig   = "Fatal error loading .env file: %s \n"
-	errDatabase = "Fatal error database: %s \n"
-	errServer   = "Fatal error server: %s \n"
+	errConf = "Fatal error loading .env file: %s \n"
+	errDB   = "Fatal error database: %s \n"
 )
 
 func main() {
 	// util initialization
 	conf := dotenv.Init()
 	err := conf.LoadConfig()
-	util.ErrorHandler(errConfig, err)
+	util.ErrorHandler(errConf, err)
 
 	// orm initialization
 	orm, err := gorm.Open(
 		postgres.Open(database.GetDSN(conf)),
 		&gorm.Config{},
 	)
-	util.ErrorHandler(errDatabase, err)
+	util.ErrorHandler(errDB, err)
 
 	// run server
-	util.ErrorHandler(errServer, app.Run(conf, &database.Database{ORM: orm}))
 	defer glog.Flush()
+	app.Run(conf, &database.Database{ORM: orm})
 }

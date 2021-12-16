@@ -3,40 +3,47 @@ package app
 import (
 	"context"
 	"github.com/cyneruxyz/address-book/gen/proto"
-	"google.golang.org/grpc"
 )
+
+const successMsg = "Procedure completed successfully"
 
 type server struct {
 	proto.AddressBookServiceServer
 	repo Storage
 }
 
-func (s *server) Echo(ctx context.Context, req *proto.EchoRequest) (*proto.Response, error) {
-	return &proto.Response{Message: req.Message}, nil
+func NewServer(repo Storage) server {
+	return server{repo: repo}
 }
 
-func (s *server) Create(ctx context.Context, req *proto.AddressFieldRequest) (*proto.AddressField, error) {
-	if err := s.repo.CreateItem(req.Field); err != nil {
+func (s server) Echo(_ context.Context, request *proto.EchoRequest) (*proto.Response, error) {
+	return &proto.Response{Message: request.Message}, nil
+}
+
+func (s server) Create(_ context.Context, request *proto.AddressFieldRequest) (*proto.Response, error) {
+	if err := s.repo.CreateItem(request.Field); err != nil {
 		return nil, err
 	}
 
-	return req.Field, nil
+	return &proto.Response{Message: successMsg}, nil
 }
 
-func (s *server) Read(ctx context.Context, query *proto.AddressFieldQuery) ([]*proto.AddressField, error) {
+func (s server) Read(_ context.Context, query *proto.AddressFieldQuery) (*proto.AddressFieldResponse, error) {
 	return s.repo.ReadItem(query.Param)
 }
 
-func (s *server) Update(ctx context.Context, req *proto.AddressFieldUpdateRequest) (*proto.Response, error) {
-	if err := s.repo.UpdateItem(req.Phone, req.ReplacementField); err != nil {
+func (s server) Update(_ context.Context, request *proto.AddressFieldUpdateRequest) (*proto.Response, error) {
+	if err := s.repo.UpdateItem(request.Phone, request.ReplacementField); err != nil {
 		return nil, err
 	}
 
-	return &proto.Response{Message: "Address field updated successfully"}, nil
+	return &proto.Response{Message: successMsg}, nil
 }
 
-func (s *server) Delete(ctx context.Context, req *proto.Phone, opts ...grpc.CallOption) (*proto.Response, error) {
-	s.repo.DeleteItem(req)
+func (s server) Delete(_ context.Context, phone *proto.Phone) (*proto.Response, error) {
+	s.repo.DeleteItem(phone)
 
-	return &proto.Response{Message: "Address field deleted successfully"}, nil
+	return &proto.Response{Message: successMsg}, nil
 }
+
+func (s server) MustEmbedUnimplementedAddressBookServiceServer() {}

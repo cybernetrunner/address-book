@@ -1,7 +1,5 @@
-proto:
-	buf generate
 
-test:
+tests: cleaning
 	go test ./... -race
 
 env:
@@ -11,21 +9,24 @@ depend:
 	go mod tidy -go=1.16
 	go mod vendor
 
-run:
-	go fmt ./...
-	golangci-lint run ./...
+protogen:
+	buf generate
+
+run: cleaning
 	echo "DEBUG: RUN SERVER"
 	go run cmd/server/main.go
 
-build:
-	go fmt ./...
-	golangci-lint run ./...
+build: cleaning
 	mkdir -p bin
 	go build -o bin/server cmd/server/main.go
 
 clear:
 	rm -r gen
 	rm -r bin
+
+cleaning:
+	go fmt ./...
+	golangci-lint run ./...
 
 deploy:
 	minikube start
@@ -34,16 +35,16 @@ deploy:
 	kubectl get services
 	minikube dashboard
 
-composeup:
+compose_up:
 	echo "DEBUG: RUN DOCKER-COMPOSE (DB+SERVER)"
 	docker-compose --env-file .env build
 	docker-compose --env-file .env up
 
-composedown:
+compose_down:
 	docker-compose down
 
-migrateup:
-	migrate -path internal/database/migrations -database "postgresql://${DB_USER}:${DB_NAME}@${DB_HOST}:${DB_PORT}/go_sample?sslmode=${DB_SSLMODE}" -verbose up
+migrate_up: env
+	migrate -path internal/database/migrations -database "postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=${DB_SSLMODE}" -verbose up
 
-migratedown:
-	migrate -path internal/database/migrations -database "postgresql://${DB_USER}@${DB_NAME}:${DB_PORT}/go_sample?sslmode=${DB_SSLMODE}" -verbose down
+migrate_down: env
+	migrate -path internal/database/migrations -database "postgresql://${DB_USER}@${DB_PASSWORD}:${DB_PORT}/go_sample?sslmode=${DB_SSLMODE}" -verbose down
