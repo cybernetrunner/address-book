@@ -5,8 +5,7 @@ go 1.16
 require (
 	github.com/golang/glog v1.0.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.7.1
-	github.com/profclems/go-dotenv v0.1.2
-	github.com/spf13/cast v1.4.1 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
 	golang.org/x/net v0.0.0-20211203184738-4852103109b8 // indirect
 	golang.org/x/sys v0.0.0-20211204120058-94396e421777 // indirect
 	google.golang.org/genproto v0.0.0-20211203200212-54befc351ae9

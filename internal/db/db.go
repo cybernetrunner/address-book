@@ -1,27 +1,16 @@
-package database
+package db
 
 import (
-	"fmt"
 	"github.com/cyneruxyz/address-book/gen/proto"
-	m "github.com/cyneruxyz/address-book/internal/database/model"
-	"github.com/profclems/go-dotenv"
+	m "github.com/cyneruxyz/address-book/internal/db/model"
 	"gorm.io/gorm"
 	"strings"
 )
 
-var model = &m.Fields{}
-
-func GetDSN(conf *dotenv.DotEnv) string {
-	return fmt.Sprintf(
-		"host=%s user=%s dbname=%s port=%s sslmode=%s password=%s",
-		conf.GetString("DB_HOST"),
-		conf.GetString("DB_USER"),
-		conf.GetString("DB_NAME"),
-		conf.GetString("DB_PORT"),
-		conf.GetString("DB_SSLMODE"),
-		conf.GetString("DB_PASSWORD"),
-	)
-}
+var (
+	model = &m.Fields{}
+	DSN   = "host=0.0.0.0 user=gorm dbname=gorm port=5432 sslmode=disable password=gorm12345"
+)
 
 type Database struct {
 	ORM *gorm.DB

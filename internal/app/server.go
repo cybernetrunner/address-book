@@ -2,10 +2,9 @@ package app
 
 import (
 	"github.com/cyneruxyz/address-book/gen/proto"
-	"github.com/cyneruxyz/address-book/internal/database"
+	"github.com/cyneruxyz/address-book/internal/db"
 	"github.com/cyneruxyz/address-book/pkg/util"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"github.com/profclems/go-dotenv"
 	"google.golang.org/grpc"
 
 	"context"
@@ -16,12 +15,12 @@ import (
 const (
 	errProtoHandlers  = "Fatal error generated proto handlers: %s "
 	errListenAndServe = "Fatal error of http controller: %s "
+	grpcPort          = "9090"
+	httpAddr          = "localhost:8081"
 )
 
-func Run(conf *dotenv.DotEnv, db *database.Database) {
+func Run(db *db.Database) {
 	serSvr := NewServer(db)
-	grpcPort := conf.GetString("SERVER_GRPC_PORT")
-	httpPort := conf.GetString("SERVER_HTTP_PORT")
 
 	// Initialize context and defer canceling this context
 	ctx, cancel := context.WithCancel(context.Background())
@@ -52,5 +51,5 @@ func Run(conf *dotenv.DotEnv, db *database.Database) {
 	// Start HTTP server (and proxy calls to gRPC server endpoint)
 	util.ErrorHandler(
 		errListenAndServe,
-		http.ListenAndServe(httpPort, mux))
+		http.ListenAndServe(httpAddr, mux))
 }
