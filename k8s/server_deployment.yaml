@@ -6,7 +6,6 @@ metadata:
     name: go-web-app
 
 spec:
-  replicas: 1
   selector:
     matchLabels:
       name: go-web-app
@@ -15,12 +14,20 @@ spec:
       labels:
         name: go-web-app
     spec:
+      initContainers:
+      - name: migration
+        image: migrate/migrate:latest
+        command: ['/migrate']
+        args: ['--path', 'internal/database/migrations', '-database', 'postgresql://gorm:gorm12345@10.96.0.3:5432/gorm?sslmode=disable', '-verbose', 'up']
+
       containers:
-      - name: application
-        image: cybernetrunner/address-book:latest
+      - image: cybernetrunner/address-book:latest
+        name: go-web-app
         imagePullPolicy: IfNotPresent
+
         ports:
         - containerPort: 8081
+
         env:
         - name: POSTGRES_PORT
           value: "5432"

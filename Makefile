@@ -2,9 +2,6 @@
 tests: cleaning
 	go test ./... -race
 
-env:
-	export $(grep -v '^#' .env | xargs)
-
 depend:
 	go mod tidy -go=1.16
 	go mod vendor
@@ -12,7 +9,7 @@ depend:
 protogen:
 	buf generate
 
-run: cleaning
+run:
 	echo "DEBUG: RUN SERVER"
 	go run cmd/server/main.go
 
@@ -43,8 +40,8 @@ compose_up:
 compose_down:
 	docker-compose down
 
-migrate_up: env
-	migrate -path internal/database/migrations -database "postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=${DB_SSLMODE}" -verbose up
+migrate_up:
+	migrate -path internal/database/migrations -database "postgresql://gorm:gorm12345@10.96.0.3:5432/gorm?sslmode=disable" -verbose up
 
-migrate_down: env
-	migrate -path internal/database/migrations -database "postgresql://${DB_USER}@${DB_PASSWORD}:${DB_PORT}/go_sample?sslmode=${DB_SSLMODE}" -verbose down
+migrate_down:
+	migrate -path internal/database/migrations -database "postgresql://gorm@gorm12345:5432/gorm?sslmode=disable" -verbose down

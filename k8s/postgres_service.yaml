@@ -7,8 +7,8 @@ metadata:
 
 spec:
   type: NodePort
-  clusterIP: 10.96.0.2
+  clusterIP: 10.96.0.3
   ports:
    - port: 5432
   selector:
-   app: postgres-db
+   app: postgres

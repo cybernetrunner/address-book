@@ -3,36 +3,40 @@ kind: Deployment
 apiVersion: apps/v1
 
 metadata:
-  name: postgres-db
+  name: postgres
 
 spec:
-  replicas: 1
-
   selector:
     matchLabels:
-      name: postgres-db
+      name: postgres
+
+  strategy:
+    type: Recreate
 
   template:
     metadata:
       labels:
-        name: postgres-db
+        app: postgres
     spec:
       containers:
-      - name: database
-        image: postgres:10.1
+      - image: postgres:10.1
+        name: database
+        env:
+        - name: POSTGRES_DB
+          value: "gorm"
+        - name: POSTGRES_USER
+          value: "gorm"
+        - name: POSTGRES_PASSWORD
+          value: "gorm12345"
+
         imagePullPolicy: IfNotPresent
+
         ports:
         - containerPort: 5432
-          env:
-          - name: POSTGRES_DB
-            value: "gorm"
-          - name: POSTGRES_USER
-            value: "gorm"
-          - name: POSTGRES_PASSWORD
-            value: "gorm12345"
-          volumeMounts:
-          - mountPath: "/var/lib/postgresql/data"
-            name: "mendix-pgdata"
+
+        volumeMounts:
+        - name: mendix-pgdata
+          mountPath: "/var/lib/postgresql/data"
       volumes:
       - hostPath:
         path: "/home/docker/pgdata"
