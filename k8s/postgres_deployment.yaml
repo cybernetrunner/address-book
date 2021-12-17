@@ -3,12 +3,12 @@ kind: Deployment
 apiVersion: apps/v1
 
 metadata:
-  name: postgres
+  name: postgres-db
 
 spec:
   selector:
     matchLabels:
-      name: postgres
+      name: postgres-db
 
   strategy:
     type: Recreate
@@ -16,7 +16,7 @@ spec:
   template:
     metadata:
       labels:
-        app: postgres
+        name: postgres-db
     spec:
       containers:
       - image: postgres:10.1
