@@ -15,14 +15,14 @@ services:
         - fullstack
 
     migrate:
-        image: migrate/migrate
-        networks:
-            - new
-        volumes:
-            - .:/migrations
-        command: ['--path', 'internal/database/migrations', '-database', 'postgresql://gorm:gorm12345@localhost:5432/gorm?sslmode=disable', '-verbose', 'up']
-        links:
-            - db
+      image: migrate/migrate
+      networks:
+        - fullstack
+      volumes:
+        - .:/migrations
+      command: ['--path', 'internal/database/migrations', '-database', 'postgresql://gorm:gorm12345@localhost:5432/gorm?sslmode=disable', '-verbose', 'up']
+      links:
+        - db
 
     app:
       container_name: address_book_server
@@ -33,8 +33,6 @@ services:
         - postgres
       networks:
         - fullstack
-
-
 
 volumes:
   api:
