@@ -1,0 +1,45 @@
+version: '3'
+
+services:
+    postgres:
+      image: postgres:latest
+      container_name: db_postgres
+      environment:
+        - POSTGRES_USER=gorm
+        - POSTGRES_PASSWORD=gorm12345
+        - POSTGRES_DB=gorm
+        - POSTGRES_HOST=localhost
+      ports:
+        - 5432:5432
+      networks:
+        - fullstack
+
+    migrate:
+        image: migrate/migrate
+        networks:
+            - new
+        volumes:
+            - .:/migrations
+        command: ['--path', 'internal/database/migrations', '-database', 'postgresql://gorm:gorm12345@localhost:5432/gorm?sslmode=disable', '-verbose', 'up']
+        links:
+            - db
+
+    app:
+      container_name: address_book_server
+      build: .
+      ports:
+        - 8081:8081
+      depends_on:
+        - postgres
+      networks:
+        - fullstack
+
+
+
+volumes:
+  api:
+  database_postgres:
+
+networks:
+  fullstack:
+    driver: bridge
