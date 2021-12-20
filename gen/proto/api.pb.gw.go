@@ -103,7 +103,7 @@ var (
 	filter_AddressBookService_Read_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
 )
 
-func request_AddressBookService_Read_0(ctx context.Context, marshaler runtime.Marshaler, client AddressBookServiceClient, req *http.Request, pathParams map[string]string) (AddressBookService_ReadClient, runtime.ServerMetadata, error) {
+func request_AddressBookService_Read_0(ctx context.Context, marshaler runtime.Marshaler, client AddressBookServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq AddressFieldQuery
 	var metadata runtime.ServerMetadata
 
@@ -114,16 +114,24 @@ func request_AddressBookService_Read_0(ctx context.Context, marshaler runtime.Ma
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	stream, err := client.Read(ctx, &protoReq)
-	if err != nil {
-		return nil, metadata, err
+	msg, err := client.Read(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_AddressBookService_Read_0(ctx context.Context, marshaler runtime.Marshaler, server AddressBookServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq AddressFieldQuery
+	var metadata runtime.ServerMetadata
+
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	header, err := stream.Header()
-	if err != nil {
-		return nil, metadata, err
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_AddressBookService_Read_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	metadata.HeaderMD = header
-	return stream, metadata, nil
+
+	msg, err := server.Read(ctx, &protoReq)
+	return msg, metadata, err
 
 }
 
@@ -250,10 +258,26 @@ func RegisterAddressBookServiceHandlerServer(ctx context.Context, mux *runtime.S
 	})
 
 	mux.Handle("GET", pattern_AddressBookService_Read_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		err := status.Error(codes.Unimplemented, "streaming calls are not yet supported in the in-process transport")
-		_, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-		return
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/cyneruxyz.api.v1.AddressBookService/Read", runtime.WithHTTPPathPattern("/app"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_AddressBookService_Read_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_AddressBookService_Read_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("PUT", pattern_AddressBookService_Update_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -399,7 +423,7 @@ func RegisterAddressBookServiceHandlerClient(ctx context.Context, mux *runtime.S
 			return
 		}
 
-		forward_AddressBookService_Read_0(ctx, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
+		forward_AddressBookService_Read_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -463,7 +487,7 @@ var (
 
 	forward_AddressBookService_Create_0 = runtime.ForwardResponseMessage
 
-	forward_AddressBookService_Read_0 = runtime.ForwardResponseStream
+	forward_AddressBookService_Read_0 = runtime.ForwardResponseMessage
 
 	forward_AddressBookService_Update_0 = runtime.ForwardResponseMessage
 

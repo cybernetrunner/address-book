@@ -1,25 +1,47 @@
-create:
-	buf generate
-	mockgen -source=internal/app/intarfaces.go --destination=internal/mock/repo.go Storage
 
-clear:
-	rm -r gen
-	rm -r bin
+tests: cleaning
+	go test ./... -race
 
 depend:
 	go mod tidy -go=1.16
 	go mod vendor
 
-test:
-	go test ./... -race
+protogen:
+	buf generate
 
-build:
-	go fmt ./...
-	golangci-lint run ./...
+run:
+	echo "DEBUG: RUN SERVER"
+	go run cmd/server/main.go
+
+build: cleaning
 	mkdir -p bin
 	go build -o bin/server cmd/server/main.go
 
-run:
+clear:
+	rm -r gen
+	rm -r bin
+
+cleaning:
 	go fmt ./...
 	golangci-lint run ./...
-	go run cmd/server/main.go
+
+deploy:
+	minikube start
+	minikube status
+	kubectl apply -f k8s --validate=false
+	kubectl get services
+	minikube dashboard
+
+compose_up:
+	echo "DEBUG: RUN DOCKER-COMPOSE (DB+SERVER)"
+	docker-compose --env-file .env build
+	docker-compose --env-file .env up
+
+compose_down:
+	docker-compose down
+
+migrate_up:
+	migrate -path internal/database/migrations -database "postgresql://gorm:gorm12345@10.96.0.3:5432/gorm?sslmode=disable" -verbose up
+
+migrate_down:
+	migrate -path internal/database/migrations -database "postgresql://gorm@gorm12345:5432/gorm?sslmode=disable" -verbose down

@@ -19,7 +19,7 @@ service AddressBookService {
     };
   }
 
-  rpc Read(AddressFieldQuery) returns (stream AddressField) {
+  rpc Read(AddressFieldQuery) returns (AddressFieldResponse) {
     option (google.api.http) = {
       get:  "/app"
     };
@@ -55,6 +55,11 @@ message AddressFieldQuery {
 
 message AddressFieldRequest {
   AddressField field = 1;
+}
+
+message AddressFieldResponse {
+  repeated AddressField fields = 1;
+
 }
 
 message AddressFieldUpdateRequest {

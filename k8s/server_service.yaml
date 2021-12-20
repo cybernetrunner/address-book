@@ -1,0 +1,16 @@
+---
+kind: Service
+apiVersion: v1
+
+metadata:
+  name: go-web
+
+spec:
+  type: LoadBalancer
+  clusterIP: 10.96.0.2
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8081
+  selector:
+    name: go-web-app
